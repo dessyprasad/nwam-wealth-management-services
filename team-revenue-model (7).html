@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Wealth Management Services</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --blue:#1882ed; --blue-light:#e8f2fd; --blue-dark:#0f5db5; --blue-xlight:#f0f7ff;
+  --ink:#1a2330; --ink-mid:#2e3d4f; --ink-soft:#6b7a8d;
+  --bg:#f7faff; --white:#ffffff;
+  --green:#1a7a4a; --green-light:#e6f4ed;
+  --red:#c0392b; --red-light:#fdf0ef;
+  --amber:#b36b00; --amber-light:#fef5e4;
+  --border:rgba(24,130,237,0.18); --border-soft:rgba(24,130,237,0.1);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;height:56px;z-index:200;background:var(--white);border-bottom:1px solid var(--border-soft);display:flex;align-items:center;padding:0 2.5rem;gap:0;}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:15px;color:var(--ink);letter-spacing:0.02em;margin-right:3rem;white-space:nowrap;}
+.nav-logo span{color:var(--blue);}
+.nav-tabs{display:flex;gap:0;list-style:none;height:56px;}
+.nav-tabs li{height:100%;}
+.nav-tabs button{height:100%;padding:0 1.25rem;background:none;border:none;border-bottom:2px solid transparent;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink-soft);cursor:pointer;letter-spacing:0.02em;transition:color 0.15s,border-color 0.15s;white-space:nowrap;}
+.nav-tabs button:hover{color:var(--blue);}
+.nav-tabs button.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:500;}
+.nav-right{margin-left:auto;font-size:12px;color:var(--ink-soft);display:flex;align-items:center;gap:6px;}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:var(--green);}
+
+/* SLIDE CONTAINER */
+.slide-container{position:fixed;top:56px;left:0;right:0;bottom:0;overflow:hidden;}
+.slide{position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity 0.3s ease,transform 0.3s ease;transform:translateX(30px);}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
+.slide.prev{transform:translateX(-30px);}
+
+/* ── SLIDE 1: COVER ── */
+.cover{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;padding:3rem 2rem 5rem;background:var(--bg);color:var(--ink);text-align:center;position:relative;}
+.cover-eyebrow{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:1rem;}
+.cover h1{font-family:'DM Serif Display',serif;font-size:clamp(36px,5vw,58px);line-height:1.05;letter-spacing:-0.01em;margin-bottom:2rem;max-width:800px;color:var(--blue);font-weight:400;}
+.cover h1 em{font-style:normal;color:var(--blue);}
+.cover-sub{font-size:17px;color:var(--ink-soft);font-weight:300;line-height:1.8;max-width:520px;margin-bottom:3rem;}
+.cover-contents{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;width:100%;max-width:860px;margin-bottom:3rem;}
+.cover-card{background:var(--white);border:1px solid var(--border-soft);border-radius:6px;padding:1.25rem 1.5rem;text-align:left;cursor:pointer;transition:background 0.15s,border-color 0.15s;border-top:3px solid var(--blue);}
+.cover-card:hover{background:var(--blue-light);border-color:var(--blue);}
+.cover-card .cc-num{font-size:13px;letter-spacing:0.04em;color:var(--blue);margin-bottom:6px;font-weight:700;}
+.cover-card .cc-title{font-family:'DM Sans',sans-serif;font-size:15px;color:var(--ink);margin-bottom:5px;font-weight:600;}
+.cover-card .cc-desc{font-size:12px;color:var(--ink-soft);line-height:1.55;}
+.cover-cta{display:flex;flex-direction:row;align-items:center;gap:10px;cursor:pointer;position:absolute;top:50%;right:3rem;transform:translateY(-50%);}
+.cover-cta-text{font-size:13px;color:var(--blue);letter-spacing:0.08em;text-transform:uppercase;font-weight:500;}
+.cover-arrow{font-size:28px;color:var(--blue);animation:bounceRight 1.4s ease-in-out infinite;}
+@keyframes bounceRight{0%,100%{transform:translateX(0);}50%{transform:translateX(8px);}}
+
+/* ── SLIDE INNER LAYOUT ── */
+.slide-inner{max-width:960px;margin:0 auto;padding:3rem 2.5rem 4rem;}
+.slide-header{margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border-soft);}
+.slide-num{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--blue);font-weight:500;margin-bottom:0.5rem;}
+.slide-title{font-family:'DM Serif Display',serif;font-size:clamp(28px,4vw,42px);color:var(--ink);line-height:1.15;margin-bottom:0.75rem;}
+.slide-intro{font-size:15px;color:var(--ink-soft);font-weight:300;line-height:1.8;max-width:680px;}
+
+/* PAYOUT CARDS */
+.payout-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem;}
+.payout-card{background:var(--white);border:1px solid var(--border-soft);border-radius:6px;padding:1.75rem 1.5rem;text-align:center;}
+.payout-card .pct{font-family:'DM Serif Display',serif;font-size:52px;color:var(--blue);line-height:1;margin-bottom:8px;}
+.payout-card .pct-label{font-size:13px;color:var(--ink);font-weight:500;margin-bottom:6px;}
+.payout-card .pct-detail{font-size:12px;color:var(--ink-soft);line-height:1.55;}
+
+/* MODEL PANEL */
+.model-panel{background:var(--white);border:1px solid var(--border-soft);border-radius:8px;padding:1.75rem 2rem;margin-bottom:1.5rem;}
+.panel-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--ink);margin-bottom:0.4rem;}
+.panel-intro{font-size:13px;color:var(--ink-soft);margin-bottom:1.5rem;font-weight:300;line-height:1.7;}
+
+/* CONTROLS */
+.controls-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem;margin-bottom:1.5rem;padding:1.25rem;background:var(--bg);border-radius:6px;border:1px solid var(--border);}
+.cg{display:flex;flex-direction:column;gap:5px;}
+.cg label{font-size:11px;color:var(--ink-soft);letter-spacing:0.04em;text-transform:uppercase;}
+.cg .cval{font-size:13px;font-weight:500;color:var(--ink);}
+.cg .cval small{font-size:11px;color:var(--ink-soft);font-weight:400;}
+input[type=range]{width:100%;accent-color:var(--blue);cursor:pointer;}
+select{font-size:13px;padding:5px 8px;border:1px solid var(--border-soft);border-radius:4px;background:var(--white);color:var(--ink);cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;}
+
+/* METRICS */
+.metrics-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1.5rem;}
+.metric{background:var(--bg);border-radius:6px;padding:1rem;border:1px solid var(--border);}
+.metric .ml{font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:5px;}
+.metric .mv{font-size:21px;font-weight:500;color:var(--ink);line-height:1;}
+.metric .ms{font-size:11px;color:var(--ink-soft);margin-top:4px;}
+.metric.good .mv{color:var(--green);}
+.metric.bad .mv{color:var(--red);}
+.metric.warn .mv{color:var(--amber);}
+
+/* HURDLES */
+.hurdles-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.5rem;}
+@media(max-width:600px){.hurdles-row{grid-template-columns:1fr;}}
+.hurdle{border-radius:6px;padding:1rem 1.1rem;border:1px solid var(--border-soft);background:var(--white);}
+.hurdle .ht{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:5px;}
+.hurdle .hs{font-size:14px;font-weight:500;margin-bottom:5px;}
+.hurdle .hd{font-size:12px;color:var(--ink-soft);line-height:1.6;}
+.hurdle.pass{border-left:3px solid var(--green);}
+.hurdle.fail{border-left:3px solid var(--red);}
+.hurdle.warn{border-left:3px solid #C8890E;}
+.hurdle.pass .hs{color:var(--green);}
+.hurdle.fail .hs{color:var(--red);}
+.hurdle.warn .hs{color:var(--amber);}
+
+/* CHART */
+.chart-wrap{position:relative;width:100%;height:260px;margin-bottom:1rem;}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--ink-soft);margin-bottom:1rem;}
+.legend span{display:flex;align-items:center;gap:6px;}
+.ldot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+.lline{width:18px;height:2px;border-radius:0;flex-shrink:0;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;padding:8px 10px;font-size:11px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);border-bottom:1px solid var(--border-soft);white-space:nowrap;}
+td{padding:8px 10px;border-bottom:1px solid var(--border-soft);color:var(--ink);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--bg);}
+.tg{color:var(--green);font-weight:500;}
+.tr{color:var(--red);font-weight:500;}
+.ta{color:var(--amber);font-weight:500;}
+.badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:500;}
+.badge-g{background:var(--green-light);color:var(--green);}
+.badge-r{background:var(--red-light);color:var(--red);}
+.badge-a{background:var(--amber-light);color:var(--amber);}
+
+/* YEAR PICKER */
+.year-picker{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem;}
+.yr-btn{padding:5px 14px;border-radius:3px;font-size:12px;border:1px solid var(--border-soft);background:var(--white);color:var(--ink-soft);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.12s;}
+.yr-btn.active{background:var(--blue);color:var(--white);border-color:var(--blue);}
+.yr-btn:hover:not(.active){border-color:var(--blue);color:var(--blue);}
+
+/* TRIGGER BOX */
+.trigger-box{border-radius:6px;padding:1.1rem 1.4rem;border:1px solid var(--border-soft);margin-bottom:1.5rem;}
+.trigger-box.pass{border-left:3px solid var(--green);background:var(--green-light);}
+.trigger-box.warn{border-left:3px solid #C8890E;background:var(--amber-light);}
+.trigger-box.fail{border-left:3px solid var(--red);background:var(--red-light);}
+.trigger-box .tt{font-size:13px;font-weight:500;margin-bottom:5px;}
+.trigger-box.pass .tt{color:var(--green);}
+.trigger-box.warn .tt{color:var(--amber);}
+.trigger-box.fail .tt{color:var(--red);}
+.trigger-box .td{font-size:13px;color:var(--ink);line-height:1.7;}
+
+/* INSIGHT */
+.insight{background:var(--blue);color:#fff;border-radius:6px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;font-size:14px;line-height:1.8;}
+.insight strong{color:rgba(255,255,255,0.85);font-weight:600;}
+
+/* SLIDE NAV FOOTER */
+.snav-btn-back{position:fixed;left:1.5rem;top:50%;transform:translateY(-50%);z-index:150;}
+.snav-btn-next{position:fixed;right:1.5rem;top:50%;transform:translateY(-50%);z-index:150;}
+.slide-footer{display:none;}
+.snav-btn{display:flex;align-items:center;gap:10px;cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--blue);letter-spacing:0.08em;text-transform:uppercase;transition:opacity 0.15s;padding:0;}
+.snav-btn:hover{opacity:0.7;}
+.snav-btn .sarrow{font-size:16px;animation:bounceRight 1.4s ease-in-out infinite;}
+.snav-btn.back .sarrow{animation:bounceLeft 1.4s ease-in-out infinite;}
+@keyframes bounceLeft{0%,100%{transform:translateX(0);}50%{transform:translateX(-8px);}}
+.note{font-size:12px;color:var(--ink-soft);margin-top:8px;line-height:1.6;}
+
+/* SECTION LABEL */
+.sec-label{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue);font-weight:500;margin-bottom:6px;}
+
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:640px){.two-col{grid-template-columns:1fr;}}
+
+/* PAYOUT CALC ROW */
+.calc-result-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:1.5rem;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Wealth Management Services</div>
+  <ul class="nav-tabs">
+    <li><button class="active" onclick="goTo(0,this)">Overview</button></li>
+    <li><button onclick="goTo(1,this)">Team Structure</button></li>
+    <li><button onclick="goTo(2,this)">Payout Structure</button></li>
+    <li><button onclick="goTo(3,this)">Profitability Model</button></li>
+    <li><button onclick="goTo(4,this)">Advisor Timing</button></li>
+    <li><button onclick="goTo(5,this)">How This Was Calculated</button></li>
+  </ul>
+  <div class="nav-right"><div class="nav-dot"></div> Live model</div>
+</nav>
+
+<div class="slide-container">
+
+<!-- ═══ SLIDE 0: COVER / CONTENTS ═══ -->
+<div class="slide active" id="slide-0">
+  <div class="cover">
+    <div class="cover-eyebrow">Wealth Management Services</div>
+    <h1>Profitability Analysis</h1>
+    <div class="cover-contents">
+      <div class="cover-card" onclick="goTo(1,null)">
+        <div class="cc-num">01</div>
+        <div class="cc-title">Team Structure</div>
+        <div class="cc-desc">How the pod is built, roles, household caps, and the spin-off model.</div>
+      </div>
+      <div class="cover-card" onclick="goTo(2,null)">
+        <div class="cc-num">02</div>
+        <div class="cc-title">Payout Structure</div>
+        <div class="cc-desc">25% on firm clients, 50% on referrals and advisor-sourced. Per-household calculator included.</div>
+      </div>
+      <div class="cover-card" onclick="goTo(3,null)">
+        <div class="cc-num">03</div>
+        <div class="cc-title">Profitability Model</div>
+        <div class="cc-desc">Three hurdles: advisor income floor, practice self-sufficiency, and firm net above associate salary.</div>
+      </div>
+      <div class="cover-card" onclick="goTo(4,null)">
+        <div class="cc-num">04</div>
+        <div class="cc-title">Advisor Timing</div>
+        <div class="cc-desc">Overflow-based seeding model showing the right moment to add a new advisor.</div>
+      </div>
+    </div>
+    <div class="cover-cta" onclick="goTo(1,null)">
+      <span class="cover-cta-text">Click to view</span>
+      <span class="cover-arrow">&#8594;</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 1: TEAM STRUCTURE ═══ -->
+<div class="slide" id="slide-1">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <div class="slide-num">Section 01</div>
+      <div class="slide-title">Team structure</div>
+      <p class="slide-intro">A self-contained pod model. One Senior Wealth Advisor leads the team, supported by up to four Wealth Advisors and a shared Advisor Associate. Once the pod reaches capacity it spins off a new team.</p>
+    </div>
+
+    <!-- ORG CHART -->
+    <div style="background:var(--white);border:1px solid var(--border-soft);border-radius:8px;padding:2rem 1.5rem 1.5rem;margin-bottom:1.5rem;">
+      <svg viewBox="0 0 860 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:860px;display:block;margin:0 auto;">
+        <!-- connector lines -->
+        <!-- vertical from SWA down to horizontal bar -->
+        <line x1="430" y1="82" x2="430" y2="130" stroke="#1882ed" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.4"/>
+        <!-- horizontal bar across advisors -->
+        <line x1="110" y1="130" x2="750" y2="130" stroke="#1882ed" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.4"/>
+        <!-- vertical drops to each advisor -->
+        <line x1="110" y1="130" x2="110" y2="158" stroke="#1882ed" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.4"/>
+        <line x1="323" y1="130" x2="323" y2="158" stroke="#1882ed" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.4"/>
+        <line x1="537" y1="130" x2="537" y2="158" stroke="#1882ed" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.4"/>
+        <line x1="750" y1="130" x2="750" y2="158" stroke="#1882ed" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.4"/>
+        <!-- vertical from advisor bar down to associate -->
+        <line x1="430" y1="230" x2="430" y2="258" stroke="#1882ed" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.4"/>
+
+        <!-- SWA node -->
+        <rect x="310" y="20" width="240" height="62" rx="6" fill="#1882ed"/>
+        <text x="430" y="44" text-anchor="middle" font-family="DM Serif Display,serif" font-size="14" fill="white">Senior Wealth Advisor</text>
+        <text x="430" y="64" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">1 person · 5+ years · same payout structure</text>
+
+        <!-- WA nodes -->
+        <rect x="20" y="158" width="180" height="72" rx="6" fill="#e8f2fd" stroke="#1882ed" stroke-width="1"/>
+        <text x="110" y="181" text-anchor="middle" font-family="DM Serif Display,serif" font-size="13" fill="#1882ed">Wealth Advisor</text>
+        <text x="110" y="198" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10.5" fill="#5a6a7a">Up to 150–200 HH</text>
+        <text x="110" y="215" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10.5" fill="#5a6a7a">Revenue-based comp</text>
+
+        <rect x="233" y="158" width="180" height="72" rx="6" fill="#e8f2fd" stroke="#1882ed" stroke-width="1"/>
+        <text x="323" y="181" text-anchor="middle" font-family="DM Serif Display,serif" font-size="13" fill="#1882ed">Wealth Advisor</text>
+        <text x="323" y="198" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10.5" fill="#5a6a7a">Up to 150–200 HH</text>
+        <text x="323" y="215" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10.5" fill="#5a6a7a">Revenue-based comp</text>
+
+        <rect x="447" y="158" width="180" height="72" rx="6" fill="#e8f2fd" stroke="#1882ed" stroke-width="1"/>
+        <text x="537" y="181" text-anchor="middle" font-family="DM Serif Display,serif" font-size="13" fill="#1882ed">Wealth Advisor</text>
+        <text x="537" y="198" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10.5" fill="#5a6a7a">Up to 150–200 HH</text>
+        <text x="537" y="215" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10.5" fill="#5a6a7a">Revenue-based comp</text>
+
+        <rect x="660" y="158" width="180" height="72" rx="6" fill="#e8f2fd" stroke="#1882ed" stroke-width="1"/>
+        <text x="750" y="181" text-anchor="middle" font-family="DM Serif Display,serif" font-size="13" fill="#1882ed">Wealth Advisor</text>
+        <text x="750" y="198" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10.5" fill="#5a6a7a">Up to 150–200 HH</text>
+        <text x="750" y="215" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10.5" fill="#5a6a7a">Revenue-based comp</text>
+
+        <!-- Associate node -->
+        <rect x="310" y="258" width="240" height="62" rx="6" fill="#f7faff" stroke="#1882ed" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <text x="430" y="280" text-anchor="middle" font-family="DM Serif Display,serif" font-size="13" fill="#1a2330">Advisor Associate</text>
+        <text x="430" y="298" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10.5" fill="#5a6a7a">$75K salary · firm cost · supports full team</text>
+
+        <!-- legend -->
+        <rect x="20" y="310" width="10" height="10" rx="2" fill="#1882ed"/>
+        <text x="36" y="320" font-family="DM Sans,sans-serif" font-size="10" fill="#5a6a7a">Revenue-based role</text>
+        <rect x="170" y="310" width="10" height="10" rx="2" fill="#f7faff" stroke="#1882ed" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <text x="186" y="320" font-family="DM Sans,sans-serif" font-size="10" fill="#5a6a7a">Salaried · firm cost</text>
+      </svg>
+    </div>
+
+    <!-- Key stats row -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem;margin-bottom:1.5rem;">
+      <div style="background:var(--white);border:1px solid var(--border-soft);border-radius:6px;padding:1rem 1.25rem;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:6px;">HH cap per advisor</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--blue);line-height:1;margin-bottom:4px;">150–200</div>
+        <div style="font-size:12px;color:var(--ink-soft);">Management threshold, not an earnings ceiling</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border-soft);border-radius:6px;padding:1rem 1.25rem;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:6px;">Income floor</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--blue);line-height:1;margin-bottom:4px;">$90K+</div>
+        <div style="font-size:12px;color:var(--ink-soft);">Min take-home · target $150K+ at full book</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border-soft);border-radius:6px;padding:1rem 1.25rem;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:6px;">Ramp timeline</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--blue);line-height:1;margin-bottom:4px;">2–4 yrs</div>
+        <div style="font-size:12px;color:var(--ink-soft);">To reach full household capacity from seed</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border-soft);border-radius:6px;padding:1rem 1.25rem;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:6px;">Associate salary</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--blue);line-height:1;margin-bottom:4px;">$75K</div>
+        <div style="font-size:12px;color:var(--ink-soft);">Firm pays · team must net above this to be profitable</div>
+      </div>
+    </div>
+
+    <div class="insight">
+      <strong>Key principle:</strong> The practice must be self-sufficient. Advisor payouts are funded entirely by the book's gross revenue. The firm's only direct cost is the $75K associate salary — true profitability is when the firm's net exceeds that threshold.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 2: PAYOUT STRUCTURE ═══ -->
+<div class="slide" id="slide-2">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <div class="slide-num">Section 02</div>
+      <div class="slide-title">How advisors get paid</div>
+      <p class="slide-intro">All advisor compensation is revenue-based — no base salary. The payout rate is determined entirely by how a client relationship originated. This creates a tiered incentive structure that rewards both firm-assisted and independently developed business.</p>
+    </div>
+
+    <div class="payout-cards">
+      <div class="payout-card">
+        <div class="pct">25%</div>
+        <div class="pct-label">Company-sourced clients</div>
+        <div class="pct-detail">Leads and clients originated by the firm. Typically the majority of a new advisor's book — these are handed over as the advisor joins.</div>
+      </div>
+      <div class="payout-card">
+        <div class="pct">50%</div>
+        <div class="pct-label">Referrals &amp; advisor-sourced</div>
+        <div class="pct-detail">Children of existing clients, estate settlement referrals, and any clients the advisor brings entirely on their own.</div>
+      </div>
+      <div class="payout-card">
+        <div class="pct">25%</div>
+        <div class="pct-label">Account purchases</div>
+        <div class="pct-detail">Partial practice or account-level acquisitions. Revenue credited to the advisor on an ongoing basis — not a one-time payment.</div>
+      </div>
+    </div>
+
+    <div class="insight">
+      <strong>Senior Wealth Advisor note:</strong> The Sr. WA is on the exact same payout structure as Wealth Advisors. The title reflects 5+ years of tenure — it does not carry an override or a different comp rate. Income growth is driven entirely by household accumulation, not a rate change.
+    </div>
+
+    <div class="model-panel">
+      <div class="panel-title">Per-household payout calculator</div>
+      <p class="panel-intro">Adjust the inputs to see the blended payout per household — the core unit driving every income figure in this model. Current inputs reflect actual Q1 data from the team's active advisor.</p>
+      <div class="controls-grid">
+        <div class="cg">
+          <label>Avg revenue/HH — firm clients</label>
+          <input type="range" min="3000" max="8000" step="100" value="5550" id="p_firmHH"/>
+          <div class="cval">$<span id="p_firmHHVal">5,550</span>/HH <small>→ $1,388 payout</small></div>
+        </div>
+        <div class="cg">
+          <label>Avg revenue/HH — advisor clients</label>
+          <input type="range" min="500" max="3000" step="50" value="1150" id="p_ownHH"/>
+          <div class="cval">$<span id="p_ownHHVal">1,150</span>/HH <small>→ $575 payout</small></div>
+        </div>
+        <div class="cg">
+          <label>% firm-sourced per advisor</label>
+          <input type="range" min="50" max="100" step="5" value="80" id="p_firmPct"/>
+          <div class="cval"><span id="p_firmPctVal">80</span>% firm / <span id="p_ownPctVal">20</span>% own</div>
+        </div>
+      </div>
+      <div class="calc-result-row">
+        <div class="metric"><div class="ml">Blended payout per HH</div><div class="mv" id="p_payoutHH">$1,225</div><div class="ms">advisor take-home per household</div></div>
+        <div class="metric"><div class="ml">Blended revenue per HH</div><div class="mv" id="p_revenueHH">$4,670</div><div class="ms">gross before any payout</div></div>
+        <div class="metric"><div class="ml">HH for $90K floor</div><div class="mv" id="p_hhFor90">74</div><div class="ms">minimum to clear income floor</div></div>
+        <div class="metric"><div class="ml">HH for $150K target</div><div class="mv" id="p_hhFor150">123</div><div class="ms">full-book income target</div></div>
+      </div>
+      <p class="note">Q1 reference: fully ramped advisor generated $152,785 gross revenue (~$611K annualized), taking home $39,670 (~$159K annualized). Effective blended rate: 26% — consistent with a predominantly firm-sourced book.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 3: PROFITABILITY MODEL ═══ -->
+<div class="slide" id="slide-3">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <div class="slide-num">Section 03</div>
+      <div class="slide-title">Three hurdles to profitability</div>
+      <p class="slide-intro">The team is only considered truly profitable when all three conditions below are met simultaneously. The firm's only direct cost is the $75K associate salary — everything else must be self-funded by the practice.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:2rem;">
+      <div style="background:var(--white);border:1px solid var(--border-soft);border-top:3px solid var(--blue);border-radius:6px;padding:1.25rem;">
+        <div class="sec-label" style="margin-bottom:8px;">Hurdle 1</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:17px;color:var(--ink);margin-bottom:6px;">Advisor income</div>
+        <div style="font-size:13px;color:var(--ink-soft);line-height:1.6;">Every advisor earns at or above <strong>$90K minimum</strong>, growing toward <strong>$150K+</strong> at full book. No firm subsidy.</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border-soft);border-top:3px solid var(--blue);border-radius:6px;padding:1.25rem;">
+        <div class="sec-label" style="margin-bottom:8px;">Hurdle 2</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:17px;color:var(--ink);margin-bottom:6px;">Practice self-sufficient</div>
+        <div style="font-size:13px;color:var(--ink-soft);line-height:1.6;">The book generates enough gross revenue to fully cover all advisor payouts. <strong>Firm net is positive.</strong></div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border-soft);border-top:3px solid var(--blue);border-radius:6px;padding:1.25rem;">
+        <div class="sec-label" style="margin-bottom:8px;">Hurdle 3</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:17px;color:var(--ink);margin-bottom:6px;">Firm profitable</div>
+        <div style="font-size:13px;color:var(--ink-soft);line-height:1.6;">Firm net after all advisor payouts <strong>exceeds $75K</strong> — covering the associate salary with surplus remaining.</div>
+      </div>
+    </div>
+
+    <div class="model-panel">
+      <div class="panel-title">Team profitability model</div>
+      <p class="panel-intro">4 advisors modeled over 5 years. Advisor 1 starts fully ramped. Advisors 2, 3, and 4 join in Years 1, 2, and 3 respectively.</p>
+      <div class="controls-grid">
+        <div class="cg">
+          <label>HH revenue — firm clients</label>
+          <input type="range" min="3000" max="8000" step="100" value="5550" id="m_firmHH"/>
+          <div class="cval">$<span id="m_firmHHVal">5,550</span>/HH</div>
+        </div>
+        <div class="cg">
+          <label>HH revenue — advisor clients</label>
+          <input type="range" min="500" max="3000" step="50" value="1150" id="m_ownHH"/>
+          <div class="cval">$<span id="m_ownHHVal">1,150</span>/HH</div>
+        </div>
+        <div class="cg">
+          <label>% firm-sourced</label>
+          <input type="range" min="50" max="100" step="5" value="80" id="m_firmPct"/>
+          <div class="cval"><span id="m_firmPctVal">80</span>% firm / <span id="m_ownPctVal">20</span>% own</div>
+        </div>
+        <div class="cg">
+          <label>HH cap per advisor</label>
+          <input type="range" min="100" max="200" step="10" value="150" id="m_hhCap"/>
+          <div class="cval"><span id="m_hhCapVal">150</span> HH</div>
+        </div>
+        <div class="cg">
+          <label>Ramp speed</label>
+          <select id="m_ramp">
+            <option value="fast">Fast — 2 yrs</option>
+            <option value="medium" selected>Medium — 3 yrs</option>
+            <option value="slow">Slow — 4 yrs</option>
+          </select>
+        </div>
+      </div>
+      <div class="metrics-row" id="m_metrics"></div>
+      <div class="legend">
+        <span><span class="ldot" style="background:#1a7a4a"></span>Avg advisor take-home</span>
+        <span><span class="ldot" style="background:#1882ed"></span>Firm net after payouts</span>
+        <span><span class="lline" style="background:#c0392b"></span>$90K advisor floor</span>
+        <span><span class="lline" style="background:#b36b00"></span>$75K firm hurdle</span>
+      </div>
+      <div class="chart-wrap"><canvas id="m_chart" role="img" aria-label="Profitability chart"></canvas></div>
+      <div style="margin-bottom:1rem;">
+        <div style="font-size:11px;color:var(--ink-soft);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.07em;font-weight:500;">Hurdle status — select year</div>
+        <div class="year-picker" id="m_yearPicker"></div>
+      </div>
+      <div class="hurdles-row" id="m_hurdles"></div>
+      <div class="table-wrap">
+        <table><thead><tr><th>Year</th><th>Advisors</th><th>Total HH</th><th>Gross revenue</th><th>Advisor payouts</th><th>Avg take-home</th><th>Firm net</th><th>All 3 hurdles</th></tr></thead>
+        <tbody id="m_table"></tbody></table>
+      </div>
+      <p class="note">Firm net = gross revenue minus all advisor payouts. Associate salary ($75K) is a firm cost — not deducted here, but Hurdle 3 requires firm net to exceed it.</p>
+    </div>
+
+    <div class="model-panel">
+      <div class="panel-title">Full book ceiling — all 4 advisors at cap</div>
+      <p class="panel-intro">The theoretical maximum state before a Team 2 spin-off is triggered.</p>
+      <div class="metrics-row" id="m_fullbook"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 4: ADVISOR TIMING ═══ -->
+<div class="slide" id="slide-4">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <div class="slide-num">Section 04</div>
+      <div class="slide-title">When to add the next advisor</div>
+      <p class="slide-intro">Adding an advisor too early creates a subsidy problem — they earn below the income floor and drag team profitability. The right trigger is when existing advisors have accumulated enough overflow households to seed a sustainable book from day one.</p>
+    </div>
+
+    <div class="insight">
+      <strong>How seeding works:</strong> Each advisor has a soft cap (where overflow starts building) and a hard cap (where redistribution is required). The households between those two numbers are the pool available to seed a new hire. The question is whether that pool is large enough to sustain the new advisor immediately.
+    </div>
+
+    <div class="model-panel">
+      <div class="panel-title">Add-advisor trigger model</div>
+      <p class="panel-intro">Adjust the caps and sustainability target to find the exact conditions under which adding a new advisor makes sense.</p>
+      <div class="controls-grid">
+        <div class="cg">
+          <label>HH revenue — firm clients</label>
+          <input type="range" min="3000" max="8000" step="100" value="5550" id="t_firmHH"/>
+          <div class="cval">$<span id="t_firmHHVal">5,550</span>/HH</div>
+        </div>
+        <div class="cg">
+          <label>HH revenue — advisor clients</label>
+          <input type="range" min="500" max="3000" step="50" value="1150" id="t_ownHH"/>
+          <div class="cval">$<span id="t_ownHHVal">1,150</span>/HH</div>
+        </div>
+        <div class="cg">
+          <label>% firm-sourced</label>
+          <input type="range" min="50" max="100" step="5" value="80" id="t_firmPct"/>
+          <div class="cval"><span id="t_firmPctVal">80</span>% firm / <span id="t_ownPctVal">20</span>% own</div>
+        </div>
+        <div class="cg">
+          <label>Soft HH cap (overflow starts)</label>
+          <input type="range" min="120" max="180" step="5" value="150" id="t_soft"/>
+          <div class="cval"><span id="t_softVal">150</span> HH</div>
+        </div>
+        <div class="cg">
+          <label>Hard HH cap (must redistribute)</label>
+          <input type="range" min="150" max="220" step="5" value="180" id="t_hard"/>
+          <div class="cval"><span id="t_hardVal">180</span> HH</div>
+        </div>
+        <div class="cg">
+          <label>Income sustainability target</label>
+          <select id="t_target">
+            <option value="90000">$90K — minimum</option>
+            <option value="110000" selected>$110K — comfortable</option>
+            <option value="130000">$130K — strong</option>
+            <option value="150000">$150K — target</option>
+          </select>
+        </div>
+      </div>
+      <div class="metrics-row" id="t_metrics"></div>
+      <div id="t_trigger" class="trigger-box pass"></div>
+      <div class="legend">
+        <span><span class="ldot" style="background:#1882ed"></span>New advisor income ramp</span>
+        <span><span class="lline" style="background:#1a7a4a"></span>$90K floor</span>
+        <span><span class="lline" style="background:#b36b00"></span>Sustainability target</span>
+      </div>
+      <div class="chart-wrap"><canvas id="t_chart" role="img" aria-label="New advisor ramp chart"></canvas></div>
+      <div style="font-size:11px;color:var(--ink-soft);margin:1.5rem 0 8px;text-transform:uppercase;letter-spacing:0.07em;font-weight:500;">Seeding scenarios — starting HH vs income</div>
+      <div class="table-wrap">
+        <table><thead><tr><th>Starting HH</th><th>Day 1 income</th><th>Year 1</th><th>Year 2</th><th>Full book</th><th>Clears $90K?</th><th>Sustainable?</th></tr></thead>
+        <tbody id="t_table"></tbody></table>
+      </div>
+      <p class="note">Ramp assumes medium speed after the seed. Full book = soft cap. Recommended starting HH is highlighted.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══ SLIDE 5: HOW THIS WAS CALCULATED ═══ -->
+<div class="slide" id="slide-5">
+  <div class="slide-inner">
+    <div class="slide-header">
+      <div class="slide-num">Section 05</div>
+      <div class="slide-title">How this was calculated</div>
+      <p class="slide-intro">Every number in this model comes from one of three sources: actual team data, stated payout policy, or clearly labeled assumptions. This page documents each input so the model can be validated, updated, or adjusted as the team evolves.</p>
+    </div>
+
+    <!-- SOURCE 1 -->
+    <div class="model-panel">
+      <div class="panel-title">Actual team data</div>
+      <p class="panel-intro">Numbers pulled directly from a real Q1 payout statement from the team's active fully-ramped advisor.</p>
+      <table>
+        <thead><tr><th>Data point</th><th>Value</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td>Q1 gross revenue — NWAM (firm) clients</td><td style="font-weight:500;">$121,327</td><td style="color:var(--ink-soft);">Q1 payout statement · Schwab/Fidelity management fees</td></tr>
+          <tr><td>Q1 gross revenue — Loreen (advisor) clients</td><td style="font-weight:500;">$5,395</td><td style="color:var(--ink-soft);">Q1 payout statement · Fidelity + Schwab</td></tr>
+          <tr><td>Financial planning fees</td><td style="font-weight:500;">$1,000</td><td style="color:var(--ink-soft);">Q1 payout statement · plan completed</td></tr>
+          <tr><td>Wrap fee adjustment</td><td style="font-weight:500;">-$180</td><td style="color:var(--ink-soft);">Q1 payout statement · Poloko wrap fees billed by Schwab</td></tr>
+          <tr><td>Adjusted gross revenue (Q1)</td><td style="font-weight:500;color:var(--blue);">$152,785</td><td style="color:var(--ink-soft);">Q1 payout statement total</td></tr>
+          <tr><td>Payout — NWAM clients (25%)</td><td style="font-weight:500;">$36,972</td><td style="color:var(--ink-soft);">Q1 payout statement · book payout line</td></tr>
+          <tr><td>Payout — Loreen clients (50%)</td><td style="font-weight:500;">$2,698</td><td style="color:var(--ink-soft);">Q1 payout statement · book payout line</td></tr>
+          <tr><td>Net advisor take-home (Q1)</td><td style="font-weight:500;color:var(--blue);">$39,670</td><td style="color:var(--ink-soft);">Q1 payout statement · W2 IAR take home pay</td></tr>
+          <tr><td>Annualized gross revenue</td><td style="font-weight:500;color:var(--blue);">~$611,140</td><td style="color:var(--ink-soft);">Q1 × 4</td></tr>
+          <tr><td>Annualized advisor take-home</td><td style="font-weight:500;color:var(--blue);">~$158,680</td><td style="color:var(--ink-soft);">Q1 × 4</td></tr>
+          <tr><td>Effective blended payout rate</td><td style="font-weight:500;color:var(--blue);">~26%</td><td style="color:var(--ink-soft);">$39,670 ÷ $152,785 — consistent with predominantly firm-sourced book</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SOURCE 2 -->
+    <div class="model-panel">
+      <div class="panel-title">Stated payout policy</div>
+      <p class="panel-intro">These rates are fixed business rules, not assumptions — confirmed directly from the team's compensation structure.</p>
+      <table>
+        <thead><tr><th>Client type</th><th>Payout rate</th><th>Definition</th></tr></thead>
+        <tbody>
+          <tr><td>Company-sourced clients</td><td style="font-weight:500;color:var(--blue);">25%</td><td style="color:var(--ink-soft);">Leads and clients originated by the firm (NWAM book)</td></tr>
+          <tr><td>Referrals</td><td style="font-weight:500;color:var(--blue);">50%</td><td style="color:var(--ink-soft);">Children of existing clients, estate settlement referrals</td></tr>
+          <tr><td>Advisor-sourced clients</td><td style="font-weight:500;color:var(--blue);">50%</td><td style="color:var(--ink-soft);">Clients brought entirely by the advisor independently</td></tr>
+          <tr><td>Account purchases</td><td style="font-weight:500;color:var(--blue);">25%</td><td style="color:var(--ink-soft);">Partial practice or account-level acquisitions — ongoing, not one-time</td></tr>
+          <tr><td>Outsource planning revenue</td><td style="font-weight:500;color:var(--blue);">Equal split</td><td style="color:var(--ink-soft);">Goes into bonus pool, split equally across all team members at year-end</td></tr>
+          <tr><td>Advisor associate salary</td><td style="font-weight:500;color:var(--blue);">$75,000/yr</td><td style="color:var(--ink-soft);">Fixed firm cost — not deducted from the practice</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SOURCE 3 -->
+    <div class="model-panel">
+      <div class="panel-title">Model assumptions</div>
+      <p class="panel-intro">These inputs are estimates based on team knowledge and current data. They can be adjusted using the sliders throughout this presentation — every chart and table updates in real time.</p>
+      <table>
+        <thead><tr><th>Assumption</th><th>Default value</th><th>Basis</th></tr></thead>
+        <tbody>
+          <tr><td>Avg annual revenue per HH — firm clients</td><td style="font-weight:500;">$5,550</td><td style="color:var(--ink-soft);">Provided by active advisor based on current book composition</td></tr>
+          <tr><td>Avg annual revenue per HH — advisor clients</td><td style="font-weight:500;">$1,150</td><td style="color:var(--ink-soft);">Provided by active advisor based on current book composition</td></tr>
+          <tr><td>% firm-sourced clients per advisor</td><td style="font-weight:500;">80%</td><td style="color:var(--ink-soft);">Estimated from Q1 data — $121K firm vs $5.4K advisor revenue</td></tr>
+          <tr><td>HH cap per advisor</td><td style="font-weight:500;">150 HH</td><td style="color:var(--ink-soft);">Team policy — soft cap, can grow to 200 before redistribution</td></tr>
+          <tr><td>Advisor ramp speed (medium)</td><td style="font-weight:500;">20% / 50% / 80% / 100%</td><td style="color:var(--ink-soft);">Estimated progression over 4 years — varies by advisor and account flow</td></tr>
+          <tr><td>Advisor join timeline</td><td style="font-weight:500;">Yrs 1, 1, 2, 3</td><td style="color:var(--ink-soft);">Advisor 1 fully ramped at start; Advisors 2–4 join sequentially as team builds</td></tr>
+          <tr><td>Advisor income floor</td><td style="font-weight:500;">$90,000</td><td style="color:var(--ink-soft);">Minimum acceptable take-home — confirmed by team leadership</td></tr>
+          <tr><td>Advisor income target</td><td style="font-weight:500;">$150,000+</td><td style="color:var(--ink-soft);">At full book (~150 HH) — confirmed by team leadership</td></tr>
+          <tr><td>Profitability threshold</td><td style="font-weight:500;">Firm net &gt; $75K</td><td style="color:var(--ink-soft);">Firm net after all advisor payouts must exceed the associate salary cost</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- METHODOLOGY NOTE -->
+    <div class="insight">
+      <strong>Methodology note: </strong>All projections model 4 advisors ramping over 5 years. Revenue is calculated as households × blended revenue per HH. Advisor payout is calculated as households × blended payout per HH (weighted by firm/own client mix). Firm net = gross revenue minus total advisor payouts. The $75K associate salary is a separate firm cost used only as the Hurdle 3 threshold — it does not reduce gross revenue or advisor payouts in the model.
+    </div>
+
+  </div>
+</div>
+
+</div><!-- end slide-container -->
+
+<!-- FIXED NAV BUTTONS -->
+<button class="snav-btn back snav-btn-back" id="btn-back" onclick="navBack()" style="display:none;"><span class="sarrow">&#8592;</span> Back</button>
+<button class="snav-btn snav-btn-next" id="btn-next" onclick="navNext()" style="display:none;">Next <span class="sarrow">&#8594;</span></button>
+
+<script>
+// ─── NAV ─────────────────────────────────────────────────────────────────────
+let currentSlide = 0;
+const TOTAL_SLIDES = 6;
+function updateNavBtns() {
+  const back = document.getElementById('btn-back');
+  const next = document.getElementById('btn-next');
+  back.style.display = currentSlide > 0 ? 'flex' : 'none';
+  next.style.display = currentSlide > 0 && currentSlide < TOTAL_SLIDES - 1 ? 'flex' : 'none';
+}
+function navBack() { if(currentSlide > 0) goTo(currentSlide - 1, null); }
+function navNext() { if(currentSlide < TOTAL_SLIDES - 1) goTo(currentSlide + 1, null); }
+function goTo(i, btn) {
+  const slides = document.querySelectorAll('.slide');
+  const tabs = document.querySelectorAll('.nav-tabs button');
+  slides[currentSlide].classList.remove('active');
+  slides[currentSlide].classList.add('prev');
+  setTimeout(() => slides[currentSlide].classList.remove('prev'), 350);
+  currentSlide = i;
+  slides[i].classList.add('active');
+  tabs.forEach((t,j) => t.classList.toggle('active', j===i));
+  slides[i].scrollTop = 0;
+  updateNavBtns();
+}
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+function fmt(n) {
+  const abs=Math.abs(n),sign=n<0?'-':'';
+  if(abs>=1000000) return sign+'$'+(abs/1000000).toFixed(2)+'M';
+  if(abs>=1000) return sign+'$'+Math.round(abs).toLocaleString('en-US');
+  return sign+'$'+Math.round(abs);
+}
+function getRamp(s){
+  if(s==='fast') return [0.35,0.70,1.0,1.0,1.0];
+  if(s==='slow') return [0.15,0.35,0.60,0.85,1.0];
+  return [0.20,0.50,0.80,1.0,1.0];
+}
+function payoutPerHH(fHH,oHH,fp){ return fp*(fHH*0.25)+(1-fp)*(oHH*0.50); }
+function revenuePerHH(fHH,oHH,fp){ return fp*fHH+(1-fp)*oHH; }
+const JOIN=[0,0,1,2];
+function computeRows(fHH,oHH,fp,cap,ramp){
+  const pp=payoutPerHH(fHH,oHH,fp), rp=revenuePerHH(fHH,oHH,fp);
+  return Array.from({length:5},(_,y)=>{
+    let totalHH=0,active=0,payouts=[];
+    JOIN.forEach((join,a)=>{
+      const ya=y-join; if(ya<0)return;
+      active++;
+      const rf=a===0?1.0:ramp[Math.min(ya,ramp.length-1)];
+      const hh=Math.round(cap*rf);
+      totalHH+=hh; payouts.push(Math.round(hh*pp));
+    });
+    const gross=Math.round(totalHH*rp);
+    const totalPay=payouts.reduce((a,b)=>a+b,0);
+    const firmNet=gross-totalPay;
+    const avg=active>0?Math.round(totalPay/active):0;
+    const minPay=payouts.length?Math.min(...payouts):0;
+    return {year:y+1,active,totalHH,gross,totalPay,firmNet,avg,minPay,h1:minPay>=90000,h2:firmNet>0,h3:firmNet>75000};
+  });
+}
+function seedRamp(seed,soft,yr){
+  const rem=soft-seed, factors=[0,0.20,0.50,0.80,1.0];
+  return Math.round(seed+rem*factors[Math.min(yr,4)]);
+}
+
+// ─── SECTION 1: PAYOUT CALC ──────────────────────────────────────────────────
+function renderPayout(){
+  const fHH=parseInt(document.getElementById('p_firmHH').value);
+  const oHH=parseInt(document.getElementById('p_ownHH').value);
+  const fp=parseInt(document.getElementById('p_firmPct').value)/100;
+  document.getElementById('p_firmHHVal').textContent=fHH.toLocaleString();
+  document.getElementById('p_ownHHVal').textContent=oHH.toLocaleString();
+  document.getElementById('p_firmPctVal').textContent=Math.round(fp*100);
+  document.getElementById('p_ownPctVal').textContent=Math.round((1-fp)*100);
+  const pp=payoutPerHH(fHH,oHH,fp), rp=revenuePerHH(fHH,oHH,fp);
+  document.getElementById('p_payoutHH').textContent=fmt(Math.round(pp));
+  document.getElementById('p_revenueHH').textContent=fmt(Math.round(rp));
+  document.getElementById('p_hhFor90').textContent=Math.ceil(90000/pp);
+  document.getElementById('p_hhFor150').textContent=Math.ceil(150000/pp);
+}
+['p_firmHH','p_ownHH','p_firmPct'].forEach(id=>document.getElementById(id).addEventListener('input',renderPayout));
+renderPayout();
+
+// ─── SECTION 2: PROFITABILITY ─────────────────────────────────────────────────
+let mChart=null, mYear=4;
+function renderModel(){
+  const fHH=parseInt(document.getElementById('m_firmHH').value);
+  const oHH=parseInt(document.getElementById('m_ownHH').value);
+  const fp=parseInt(document.getElementById('m_firmPct').value)/100;
+  const cap=parseInt(document.getElementById('m_hhCap').value);
+  const spd=document.getElementById('m_ramp').value;
+  document.getElementById('m_firmHHVal').textContent=fHH.toLocaleString();
+  document.getElementById('m_ownHHVal').textContent=oHH.toLocaleString();
+  document.getElementById('m_firmPctVal').textContent=Math.round(fp*100);
+  document.getElementById('m_ownPctVal').textContent=Math.round((1-fp)*100);
+  document.getElementById('m_hhCapVal').textContent=cap;
+
+  const ramp=getRamp(spd);
+  const rows=computeRows(fHH,oHH,fp,cap,ramp);
+  const bey=rows.find(r=>r.h3);
+  const last=rows[rows.length-1];
+
+  document.getElementById('m_metrics').innerHTML=`
+    <div class="metric ${bey?'good':'bad'}"><div class="ml">Breakeven (Hurdle 3)</div><div class="mv">${bey?'Year '+bey.year:'Not reached'}</div><div class="ms">all 3 hurdles pass</div></div>
+    <div class="metric"><div class="ml">Year 5 gross revenue</div><div class="mv">${fmt(last.gross)}</div><div class="ms">${last.totalHH} total HH</div></div>
+    <div class="metric ${last.avg>=150000?'good':last.avg>=90000?'warn':'bad'}"><div class="ml">Year 5 avg take-home</div><div class="mv">${fmt(last.avg)}</div><div class="ms">per advisor</div></div>
+    <div class="metric ${last.h3?'good':last.h2?'warn':'bad'}"><div class="ml">Year 5 firm net</div><div class="mv">${fmt(last.firmNet)}</div><div class="ms">after all payouts</div></div>`;
+
+  document.getElementById('m_yearPicker').innerHTML=rows.map((r,i)=>
+    `<button class="yr-btn${i===mYear?' active':''}" onclick="setYear(${i})">Year ${r.year}</button>`).join('');
+  renderHurdles(rows[mYear]);
+
+  document.getElementById('m_table').innerHTML=rows.map(r=>{
+    const tc=r.avg>=150000?'tg':r.avg>=90000?'ta':'tr';
+    const fc=r.h3?'tg':r.h2?'ta':'tr';
+    const b=r.h1&&r.h2&&r.h3?'<span class="badge badge-g">All pass</span>':(r.h1||r.h2)?'<span class="badge badge-a">Partial</span>':'<span class="badge badge-r">Not yet</span>';
+    return `<tr><td>Year ${r.year}</td><td>${r.active}</td><td>${r.totalHH.toLocaleString()}</td><td>${fmt(r.gross)}</td><td>${fmt(r.totalPay)}</td><td class="${tc}">${fmt(r.avg)}</td><td class="${fc}">${fmt(r.firmNet)}</td><td>${b}</td></tr>`;
+  }).join('');
+
+  const pp=payoutPerHH(fHH,oHH,fp), rp=revenuePerHH(fHH,oHH,fp);
+  const fHH4=cap*4, fRev=Math.round(fHH4*rp), fPay=Math.round(fHH4*pp);
+  const fNet=fRev-fPay, fAvg=Math.round(fPay/4), fMgn=Math.round(fNet/fRev*100);
+  document.getElementById('m_fullbook').innerHTML=`
+    <div class="metric"><div class="ml">Total HH</div><div class="mv">${fHH4.toLocaleString()}</div><div class="ms">4 × ${cap} cap</div></div>
+    <div class="metric"><div class="ml">Gross revenue</div><div class="mv">${fmt(fRev)}</div></div>
+    <div class="metric ${fAvg>=150000?'good':fAvg>=90000?'warn':'bad'}"><div class="ml">Avg advisor take-home</div><div class="mv">${fmt(fAvg)}</div><div class="ms">floor $90K · target $150K+</div></div>
+    <div class="metric ${fNet>75000?'good':'bad'}"><div class="ml">Firm net</div><div class="mv">${fmt(fNet)}</div><div class="ms">${fMgn}% margin · ${fNet>75000?'surplus '+fmt(fNet-75000):'gap '+fmt(75000-fNet)}</div></div>`;
+
+  if(mChart) mChart.destroy();
+  mChart=new Chart(document.getElementById('m_chart'),{
+    type:'line',
+    data:{labels:rows.map(r=>'Year '+r.year),datasets:[
+      {label:'Avg advisor take-home',data:rows.map(r=>r.avg),borderColor:'#1a7a4a',backgroundColor:'rgba(26,122,74,0.07)',borderWidth:2,fill:true,tension:0.35,pointRadius:5,pointBackgroundColor:'#1a7a4a'},
+      {label:'Firm net',data:rows.map(r=>r.firmNet),borderColor:'#1882ed',backgroundColor:'rgba(24,130,237,0.07)',borderWidth:2,fill:true,tension:0.35,pointRadius:5,pointBackgroundColor:'#1882ed'},
+      {label:'$90K floor',data:Array(5).fill(90000),borderColor:'#c0392b',borderWidth:1.5,borderDash:[6,4],pointRadius:0,fill:false},
+      {label:'$75K hurdle',data:Array(5).fill(75000),borderColor:'#b36b00',borderWidth:1.5,borderDash:[6,4],pointRadius:0,fill:false}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+fmt(ctx.raw)}}},
+      scales:{y:{ticks:{callback:v=>fmt(v),color:'#5a6a7a',font:{size:11}},grid:{color:'rgba(90,106,122,0.1)'}},x:{ticks:{color:'#5a6a7a',font:{size:11}},grid:{display:false}}}}
+  });
+}
+function setYear(i){
+  mYear=i;
+  const fHH=parseInt(document.getElementById('m_firmHH').value);
+  const oHH=parseInt(document.getElementById('m_ownHH').value);
+  const fp=parseInt(document.getElementById('m_firmPct').value)/100;
+  const cap=parseInt(document.getElementById('m_hhCap').value);
+  const rows=computeRows(fHH,oHH,fp,cap,getRamp(document.getElementById('m_ramp').value));
+  document.querySelectorAll('.yr-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
+  renderHurdles(rows[i]);
+}
+function renderHurdles(r){
+  document.getElementById('m_hurdles').innerHTML=`
+    <div class="hurdle ${r.h1?'pass':'fail'}"><div class="ht">Hurdle 1 — Advisor income</div><div class="hs">${r.h1?'Passing':'Not yet'}</div><div class="hd">Min take-home: ${fmt(r.minPay)}<br>Floor: $90K · Target: $150K+<br>Avg: ${fmt(r.avg)}</div></div>
+    <div class="hurdle ${r.h2?'pass':'fail'}"><div class="ht">Hurdle 2 — Practice self-sufficient</div><div class="hs">${r.h2?'Passing':'Not yet'}</div><div class="hd">Firm net after payouts: ${fmt(r.firmNet)}<br>Must be positive</div></div>
+    <div class="hurdle ${r.h3?'pass':r.h2?'warn':'fail'}"><div class="ht">Hurdle 3 — Firm profitable</div><div class="hs">${r.h3?'Passing':r.h2?'Close':'Not yet'}</div><div class="hd">Firm net: ${fmt(r.firmNet)}<br>Must exceed $75K<br>${r.h3?'Surplus: '+fmt(r.firmNet-75000):'Gap: '+fmt(75000-r.firmNet)}</div></div>`;
+}
+['m_firmHH','m_ownHH','m_firmPct','m_hhCap','m_ramp'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',renderModel);
+  document.getElementById(id).addEventListener('change',renderModel);
+});
+renderModel();
+
+// ─── SECTION 3: TIMING ───────────────────────────────────────────────────────
+let tChart=null;
+function renderTiming(){
+  const fHH=parseInt(document.getElementById('t_firmHH').value);
+  const oHH=parseInt(document.getElementById('t_ownHH').value);
+  const fp=parseInt(document.getElementById('t_firmPct').value)/100;
+  const soft=parseInt(document.getElementById('t_soft').value);
+  const hard=parseInt(document.getElementById('t_hard').value);
+  const tgt=parseInt(document.getElementById('t_target').value);
+  document.getElementById('t_firmHHVal').textContent=fHH.toLocaleString();
+  document.getElementById('t_ownHHVal').textContent=oHH.toLocaleString();
+  document.getElementById('t_firmPctVal').textContent=Math.round(fp*100);
+  document.getElementById('t_ownPctVal').textContent=Math.round((1-fp)*100);
+  document.getElementById('t_softVal').textContent=soft;
+  document.getElementById('t_hardVal').textContent=hard;
+
+  const pp=payoutPerHH(fHH,oHH,fp);
+  const overflow=Math.max(0,hard-soft);
+  const hhNeeded=Math.ceil(tgt/pp);
+  const advisorsNeeded=overflow>0?Math.ceil(hhNeeded/overflow):999;
+  const totalOverflow=overflow*4;
+  const canSeed=totalOverflow>=hhNeeded;
+  const oneCanSeed=overflow>=hhNeeded;
+  const seedHH=Math.min(hhNeeded,soft);
+
+  document.getElementById('t_metrics').innerHTML=`
+    <div class="metric ${hhNeeded<=soft?'good':'warn'}"><div class="ml">HH needed day one</div><div class="mv">${hhNeeded}</div><div class="ms">to earn ${fmt(tgt)}/yr immediately</div></div>
+    <div class="metric ${overflow>=hhNeeded?'good':overflow>=hhNeeded*0.5?'warn':'bad'}"><div class="ml">Overflow per advisor</div><div class="mv">${overflow} HH</div><div class="ms">between ${soft} and ${hard} cap</div></div>
+    <div class="metric ${advisorsNeeded<=1?'good':advisorsNeeded<=2?'warn':'bad'}"><div class="ml">Advisors needed to seed</div><div class="mv">${advisorsNeeded<=4?advisorsNeeded:'4+'}</div><div class="ms">pooling overflow to reach ${hhNeeded} HH</div></div>
+    <div class="metric"><div class="ml">Blended payout/HH</div><div class="mv">${fmt(Math.round(pp))}</div><div class="ms">advisor take-home per HH</div></div>`;
+
+  const box=document.getElementById('t_trigger');
+  if(oneCanSeed){
+    box.className='trigger-box pass';
+    box.innerHTML=`<div class="tt">Add a new advisor when any single advisor hits the hard cap</div><div class="td">Each advisor's overflow zone (${soft}–${hard} HH) generates <strong>${overflow} HH</strong> — enough to seed a new advisor at <strong>${fmt(Math.round(overflow*pp))}/yr</strong> on day one, ${overflow*pp>=tgt?'meeting':'approaching'} the ${fmt(tgt)} target.</div>`;
+  } else if(canSeed){
+    box.className='trigger-box warn';
+    box.innerHTML=`<div class="tt">Wait until ${advisorsNeeded} advisors are near the hard cap</div><div class="td">A single advisor's overflow (<strong>${overflow} HH</strong>) falls short of the <strong>${fmt(tgt)} sustainability target</strong>. You need <strong>${advisorsNeeded} advisors</strong> near the hard cap simultaneously, pooling <strong>${hhNeeded} HH</strong> to seed sustainably.</div>`;
+  } else {
+    box.className='trigger-box fail';
+    box.innerHTML=`<div class="tt">Gap — overflow alone may not be enough</div><div class="td">Even pooling all 4 advisors' overflow gives only <strong>${totalOverflow} HH</strong>, short of the <strong>${hhNeeded} HH</strong> needed for <strong>${fmt(tgt)}</strong> on day one. Consider widening the cap spread or lowering the sustainability target.</div>`;
+  }
+
+  const yrs=['Day 1','Year 1','Year 2','Year 3','Full book'];
+  const incomes=[0,1,2,3,4].map(i=>Math.round(seedRamp(seedHH,soft,i)*pp));
+  if(tChart) tChart.destroy();
+  tChart=new Chart(document.getElementById('t_chart'),{
+    type:'line',
+    data:{labels:yrs,datasets:[
+      {label:'New advisor income',data:incomes,borderColor:'#1882ed',backgroundColor:'rgba(24,130,237,0.08)',borderWidth:2,fill:true,tension:0.3,pointRadius:5,pointBackgroundColor:'#1882ed'},
+      {label:'$90K floor',data:Array(5).fill(90000),borderColor:'#1a7a4a',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false},
+      {label:'Target',data:Array(5).fill(tgt),borderColor:'#b36b00',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+fmt(ctx.raw)}}},
+      scales:{y:{ticks:{callback:v=>fmt(v),color:'#5a6a7a',font:{size:11}},grid:{color:'rgba(90,106,122,0.1)'}},x:{ticks:{color:'#5a6a7a',font:{size:11}},grid:{display:false}}}}
+  });
+
+  const seeds=[...new Set([30,50,60,74,90,110,130,soft])].filter(s=>s<=soft).sort((a,b)=>a-b);
+  document.getElementById('t_table').innerHTML=seeds.map(s=>{
+    const d1=Math.round(s*pp), y1=Math.round(seedRamp(s,soft,1)*pp), y2=Math.round(seedRamp(s,soft,2)*pp), full=Math.round(soft*pp);
+    const isRec=s===hhNeeded;
+    const c=v=>v>=tgt?'tg':v>=90000?'ta':'tr';
+    return `<tr${isRec?' style="background:var(--blue-light);"':''}><td><strong>${s}</strong>${isRec?' ← recommended':''}</td><td class="${c(d1)}">${fmt(d1)}</td><td class="${c(y1)}">${fmt(y1)}</td><td class="${c(y2)}">${fmt(y2)}</td><td class="tg">${fmt(full)}</td><td>${d1>=90000?'<span class="badge badge-g">Yes</span>':'<span class="badge badge-r">No</span>'}</td><td>${d1>=tgt?'<span class="badge badge-g">Yes</span>':'<span class="badge badge-a">Below target</span>'}</td></tr>`;
+  }).join('');
+}
+['t_firmHH','t_ownHH','t_firmPct','t_soft','t_hard','t_target'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',renderTiming);
+  document.getElementById(id).addEventListener('change',renderTiming);
+});
+renderTiming();
+</script>
+</body>
+</html>
