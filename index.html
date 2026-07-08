@@ -170,6 +170,36 @@ tr:hover td{background:var(--bg);}
 
 /* PAYOUT CALC ROW */
 .calc-result-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:1.5rem;}
+
+/* PIPELINE */
+.pipeline-panel{background:var(--white);border:1px solid var(--border-soft);border-radius:8px;overflow:hidden;margin-bottom:1.5rem;}
+.pipeline-header{background:var(--blue);color:#fff;padding:0.85rem 1.75rem;font-family:'DM Serif Display',serif;font-size:20px;font-weight:400;letter-spacing:0.01em;}
+.pipeline-body{display:flex;align-items:stretch;min-height:160px;}
+.pipeline-side{flex:1;padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:10px;}
+.pipeline-side-top{display:flex;align-items:center;justify-content:space-between;}
+.pipeline-side-label{font-family:'DM Serif Display',serif;font-size:17px;color:var(--ink);}
+.pipeline-add-btn{width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;border:none;font-size:17px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.15s;}
+.pipeline-add-btn:hover{background:var(--blue-dark);}
+.pipeline-records{display:flex;flex-direction:column;gap:7px;}
+.pipeline-record{background:var(--bg);border:1px solid var(--border-soft);border-radius:5px;padding:0.55rem 0.85rem;}
+.pipeline-record-name{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px;}
+.pipeline-record-note{font-size:12px;color:var(--ink-soft);line-height:1.5;}
+.pipeline-divider{width:1px;background:var(--border);flex-shrink:0;margin:1.75rem 0;}
+/* PIPELINE MODAL */
+.pipeline-modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(26,35,48,0.35);z-index:500;display:none;align-items:center;justify-content:center;}
+.pipeline-modal-overlay.open{display:flex;}
+.pipeline-modal{background:var(--white);border-radius:8px;width:380px;max-width:90vw;box-shadow:0 8px 32px rgba(24,130,237,0.12),0 2px 8px rgba(0,0,0,0.08);}
+.pipeline-modal-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--border-soft);font-family:'DM Serif Display',serif;font-size:17px;color:var(--ink);}
+.pipeline-modal-close{background:none;border:none;font-size:22px;color:var(--ink-soft);cursor:pointer;line-height:1;padding:0;}
+.pipeline-modal-close:hover{color:var(--ink);}
+.pipeline-modal-body{padding:1.25rem;display:flex;flex-direction:column;gap:12px;}
+.pipeline-modal-body input,.pipeline-modal-body textarea{width:100%;padding:8px 10px;border:1px solid var(--border-soft);border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);background:var(--bg);resize:vertical;box-sizing:border-box;}
+.pipeline-modal-body input:focus,.pipeline-modal-body textarea:focus{outline:none;border-color:var(--blue);}
+.pipeline-modal-footer{display:flex;justify-content:flex-end;gap:8px;padding:1rem 1.25rem;border-top:1px solid var(--border-soft);}
+.pipeline-cancel-btn{padding:7px 16px;border:1px solid var(--border-soft);border-radius:4px;background:var(--white);color:var(--ink-soft);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
+.pipeline-cancel-btn:hover{border-color:var(--blue);color:var(--blue);}
+.pipeline-submit-btn{padding:7px 16px;border:none;border-radius:4px;background:var(--blue);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;}
+.pipeline-submit-btn:hover{background:var(--blue-dark);}
 </style>
 </head>
 <body>
@@ -313,6 +343,27 @@ tr:hover td{background:var(--bg);}
 
     <div class="insight">
       <strong>Key principle:</strong> The practice must be self-sufficient. Advisor payouts are funded entirely by the book's gross revenue. The firm's only direct cost is the $75K associate salary — true profitability is when the firm's net exceeds that threshold.
+    </div>
+
+    <div class="pipeline-panel">
+      <div class="pipeline-header">Pipeline</div>
+      <div class="pipeline-body">
+        <div class="pipeline-side">
+          <div class="pipeline-side-top">
+            <div class="pipeline-side-label">Advisor Pipeline</div>
+            <button class="pipeline-add-btn" onclick="openPipelineModal('advisor')" title="Add entry">+</button>
+          </div>
+          <div class="pipeline-records" id="advisor-pipeline-records"></div>
+        </div>
+        <div class="pipeline-divider"></div>
+        <div class="pipeline-side">
+          <div class="pipeline-side-top">
+            <div class="pipeline-side-label">Book Pipeline</div>
+            <button class="pipeline-add-btn" onclick="openPipelineModal('book')" title="Add entry">+</button>
+          </div>
+          <div class="pipeline-records" id="book-pipeline-records"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -616,6 +667,30 @@ tr:hover td{background:var(--bg);}
 
 </div><!-- end slide-container -->
 
+<!-- PIPELINE MODAL -->
+<div class="pipeline-modal-overlay" id="pipeline-modal" onclick="pipelineOverlayClick(event)">
+  <div class="pipeline-modal">
+    <div class="pipeline-modal-header">
+      <span id="pipeline-modal-title">Add Entry</span>
+      <button class="pipeline-modal-close" onclick="closePipelineModal()">&times;</button>
+    </div>
+    <div class="pipeline-modal-body">
+      <div class="cg">
+        <label id="pipeline-name-label">Name</label>
+        <input type="text" id="pipeline-name-input" placeholder="Enter name..." onkeydown="if(event.key==='Enter')document.getElementById('pipeline-note-input').focus()"/>
+      </div>
+      <div class="cg">
+        <label>Note</label>
+        <textarea id="pipeline-note-input" placeholder="Enter note..." rows="3" onkeydown="if(event.key==='Enter'&&event.metaKey)submitPipelineEntry()"></textarea>
+      </div>
+    </div>
+    <div class="pipeline-modal-footer">
+      <button class="pipeline-cancel-btn" onclick="closePipelineModal()">Cancel</button>
+      <button class="pipeline-submit-btn" onclick="submitPipelineEntry()">Add</button>
+    </div>
+  </div>
+</div>
+
 <!-- FIXED NAV BUTTONS -->
 <button class="snav-btn back snav-btn-back" id="btn-back" onclick="navBack()" style="display:none;"><span class="sarrow">&#8592;</span> Back</button>
 <button class="snav-btn snav-btn-next" id="btn-next" onclick="navNext()" style="display:none;">Next <span class="sarrow">&#8594;</span></button>
@@ -781,6 +856,43 @@ function renderHurdles(r){
   document.getElementById(id).addEventListener('change',renderModel);
 });
 renderModel();
+
+// ─── PIPELINE ────────────────────────────────────────────────────────────────
+let currentPipelineTarget = null;
+const PIPELINE_CONFIG = {
+  advisor: { title: 'Add to Advisor Pipeline', nameLabel: 'Name' },
+  book:    { title: 'Add to Book Pipeline',    nameLabel: 'Book Name' }
+};
+function openPipelineModal(target) {
+  currentPipelineTarget = target;
+  const cfg = PIPELINE_CONFIG[target];
+  document.getElementById('pipeline-modal-title').textContent = cfg.title;
+  document.getElementById('pipeline-name-label').textContent = cfg.nameLabel;
+  document.getElementById('pipeline-name-input').placeholder = 'Enter ' + cfg.nameLabel.toLowerCase() + '...';
+  document.getElementById('pipeline-name-input').value = '';
+  document.getElementById('pipeline-note-input').value = '';
+  document.getElementById('pipeline-modal').classList.add('open');
+  setTimeout(() => document.getElementById('pipeline-name-input').focus(), 50);
+}
+function closePipelineModal() {
+  document.getElementById('pipeline-modal').classList.remove('open');
+  currentPipelineTarget = null;
+}
+function pipelineOverlayClick(e) {
+  if (e.target === document.getElementById('pipeline-modal')) closePipelineModal();
+}
+function submitPipelineEntry() {
+  const name = document.getElementById('pipeline-name-input').value.trim();
+  const note = document.getElementById('pipeline-note-input').value.trim();
+  if (!name) { document.getElementById('pipeline-name-input').focus(); return; }
+  const recordsEl = document.getElementById(currentPipelineTarget + '-pipeline-records');
+  const div = document.createElement('div');
+  div.className = 'pipeline-record';
+  div.innerHTML = '<div class="pipeline-record-name">' + name + '</div>' +
+    (note ? '<div class="pipeline-record-note">' + note + '</div>' : '');
+  recordsEl.appendChild(div);
+  closePipelineModal();
+}
 
 // ─── SECTION 3: TIMING ───────────────────────────────────────────────────────
 let tChart=null;
