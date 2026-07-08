@@ -798,6 +798,11 @@ tr:hover td{background:var(--bg);}
         <div class="scn-input-wrap"><span class="prefix">$</span><input type="number" id="full_exp" value="95000" min="0" step="5000" oninput="renderScenario('full')"/></div>
         <div class="scn-hint">Annual · e.g. associate $80K + dept head $15K</div>
       </div>
+      <div class="scn-field">
+        <label>Practice Purchase Price</label>
+        <div class="scn-input-wrap"><span class="prefix">$</span><input type="number" id="full_price" value="1000000" min="0" step="50000" oninput="renderScenario('full')"/></div>
+        <div class="scn-hint">Total paid to acquire the practice · annualized over the 6-yr buyout</div>
+      </div>
       <div class="scn-derived">
         <div class="dl">Revenue yield on AUM</div>
         <div class="dv" id="full_yield">—</div>
@@ -823,7 +828,7 @@ tr:hover td{background:var(--bg);}
 
     <div style="display:flex;align-items:flex-start;gap:10px;background:var(--amber-light);border:1px solid rgba(245,158,11,0.35);border-radius:6px;padding:0.75rem 1rem;">
       <span style="font-size:15px;line-height:1;margin-top:1px;flex-shrink:0;">⚠️</span>
-      <div style="font-size:13px;color:var(--ink);line-height:1.6;"><strong>Purchase terms — TBD:</strong> this view models the revenue split only. The purchase price / financing for buying the practice up front is not included yet — once we set that, we can layer firm net-of-purchase cash flow on top.</div>
+      <div style="font-size:13px;color:var(--ink);line-height:1.6;"><strong>Note:</strong> the practice purchase price is annualized evenly over the 6-year buyout window in the breakdown below. If the full buyout is paid as a single up-front lump instead, the per-year firm net in years 1–6 would differ — we can switch to a year-by-year payment schedule when the terms are set.</div>
     </div>
 
   </div>
@@ -859,6 +864,11 @@ tr:hover td{background:var(--bg);}
         <div class="scn-input-wrap"><span class="prefix">$</span><input type="number" id="staged_exp" value="95000" min="0" step="5000" oninput="renderScenario('staged')"/></div>
         <div class="scn-hint">Annual · e.g. associate $80K + dept head $15K</div>
       </div>
+      <div class="scn-field">
+        <label>Practice Purchase Price</label>
+        <div class="scn-input-wrap"><span class="prefix">$</span><input type="number" id="staged_price" value="1000000" min="0" step="50000" oninput="renderScenario('staged')"/></div>
+        <div class="scn-hint">Total paid to acquire the practice · annualized over the 6-yr buyout</div>
+      </div>
       <div class="scn-derived">
         <div class="dl">Revenue yield on AUM</div>
         <div class="dv" id="staged_yield">—</div>
@@ -884,7 +894,7 @@ tr:hover td{background:var(--bg);}
 
     <div style="display:flex;align-items:flex-start;gap:10px;background:var(--amber-light);border:1px solid rgba(245,158,11,0.35);border-radius:6px;padding:0.75rem 1rem;">
       <span style="font-size:15px;line-height:1;margin-top:1px;flex-shrink:0;">⚠️</span>
-      <div style="font-size:13px;color:var(--ink);line-height:1.6;"><strong>Staging terms — TBD:</strong> this view uses the same 50 / 25 / 25 revenue split as the full buyout. What differs between the two structures is the <em>purchase timing and cash outlay</em> (1/3 up front vs. all at once) — we can add that dimension once the payment schedule is defined.</div>
+      <div style="font-size:13px;color:var(--ink);line-height:1.6;"><strong>Note:</strong> uses the same 50 / 25 / 25 revenue split as the full buyout. The practice purchase is annualized evenly over the 6-year buyout in the breakdown. The staged structure's actual cash timing (<em>1/3 up front, remainder to year 6</em>) can be modeled as a year-by-year schedule once the payment steps are defined.</div>
     </div>
 
   </div>
@@ -1395,6 +1405,7 @@ function renderScenario(key) {
   const aum = parseFloat(document.getElementById(key + '_aum').value) || 0;
   const rev = parseFloat(document.getElementById(key + '_rev').value) || 0;
   const exp = parseFloat(document.getElementById(key + '_exp').value) || 0;
+  const price = parseFloat(document.getElementById(key + '_price').value) || 0;
 
   // Derived yield
   const yieldEl = document.getElementById(key + '_yield');
@@ -1442,11 +1453,14 @@ function renderScenario(key) {
 
   // Numbers breakdown table
   const p1 = SCN_SPLIT_YEAR, p2 = SCN_YEARS - SCN_SPLIT_YEAR;  // 6 and 4
-  const firmNet1 = rev * 0.25 - exp, firmNet2 = rev * 0.75 - exp;
-  const firmNetTot = tFirm - tExp;
+  const purchaseYr = price / SCN_SPLIT_YEAR;   // annualized over the 6-yr buyout
+  const firmNet1 = rev * 0.25 - exp - purchaseYr;
+  const firmNet2 = rev * 0.75 - exp;
+  const firmNetTot = tFirm - tExp - price;
   const money = (v, neg) => {
-    const col = neg ? 'var(--red)' : (v < 0 ? 'var(--red)' : 'var(--ink)');
-    return '<td style="color:' + col + ';">' + (neg ? '−' : '') + fmt(Math.abs(v)) + '</td>';
+    const showNeg = neg && Math.abs(v) > 0.5;
+    const col = showNeg ? 'var(--red)' : (v < 0 ? 'var(--red)' : 'var(--ink)');
+    return '<td style="color:' + col + ';">' + (showNeg ? '−' : '') + fmt(Math.abs(v)) + '</td>';
   };
   const netCol = v => v >= 0 ? 'var(--green)' : 'var(--red)';
   document.getElementById(key + '_breakdown').innerHTML =
@@ -1461,8 +1475,9 @@ function renderScenario(key) {
       '<tr><td style="color:var(--ink-soft);">NWAM Advisors — Dept (25%)</td>' + money(rev * 0.25) + money(rev * 0.25) + money(tDept) + '</tr>' +
       '<tr><td style="color:var(--ink-soft);">NWAM Firm — gross (25% → 75%)</td>' + money(rev * 0.25) + money(rev * 0.75) + money(tFirm) + '</tr>' +
       '<tr><td style="color:var(--ink-soft);">Dept expenses / salaries</td>' + money(exp, true) + money(exp, true) + money(tExp, true) + '</tr>' +
+      '<tr><td style="color:var(--ink-soft);">Practice purchase</td>' + money(purchaseYr, true) + money(0, true) + money(price, true) + '</tr>' +
       '<tr style="font-weight:600;background:var(--blue-xlight);">' +
-        '<td style="color:var(--blue);">Firm net (share − dept exp)</td>' +
+        '<td style="color:var(--blue);">Firm net (share − dept exp − purchase)</td>' +
         '<td style="color:' + netCol(firmNet1) + ';">' + fmt(firmNet1) + '</td>' +
         '<td style="color:' + netCol(firmNet2) + ';">' + fmt(firmNet2) + '</td>' +
         '<td style="color:' + netCol(firmNetTot) + ';">' + fmt(firmNetTot) + '</td>' +
