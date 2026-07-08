@@ -793,6 +793,11 @@ tr:hover td{background:var(--bg);}
         <div class="scn-input-wrap"><span class="prefix">$</span><input type="number" id="full_rev" value="500000" min="0" step="10000" oninput="renderScenario('full')"/></div>
         <div class="scn-hint">Gross annual revenue of the book</div>
       </div>
+      <div class="scn-field">
+        <label>Dept Expenses / Salaries</label>
+        <div class="scn-input-wrap"><span class="prefix">$</span><input type="number" id="full_exp" value="95000" min="0" step="5000" oninput="renderScenario('full')"/></div>
+        <div class="scn-hint">Annual · e.g. associate $80K + dept head $15K</div>
+      </div>
       <div class="scn-derived">
         <div class="dl">Revenue yield on AUM</div>
         <div class="dv" id="full_yield">—</div>
@@ -804,6 +809,13 @@ tr:hover td{background:var(--bg);}
       <div class="panel-title">Revenue split by party — 10-year view</div>
       <p class="panel-intro">Annual revenue divided across the three parties. Years 1–6 run at 50 / 25 / 25 (original advisor / NWAM advisors / firm); from Year 7 the advisor is fully bought out and the split becomes 75 / 25.</p>
       <div class="chart-wrap" style="height:320px;"><canvas id="full_chart" role="img" aria-label="Revenue split chart"></canvas></div>
+    </div>
+
+    <!-- NUMBERS BREAKDOWN -->
+    <div class="model-panel" style="margin-bottom:1.25rem;">
+      <div class="panel-title">Numbers breakdown</div>
+      <p class="panel-intro">Per-year figures for each phase and the 10-year cumulative. Dept expenses / salaries are a firm cost, deducted from the firm's share to give firm net.</p>
+      <div class="table-wrap"><table id="full_breakdown"></table></div>
     </div>
 
     <!-- SUMMARY CARDS -->
@@ -842,6 +854,11 @@ tr:hover td{background:var(--bg);}
         <div class="scn-input-wrap"><span class="prefix">$</span><input type="number" id="staged_rev" value="500000" min="0" step="10000" oninput="renderScenario('staged')"/></div>
         <div class="scn-hint">Gross annual revenue of the book</div>
       </div>
+      <div class="scn-field">
+        <label>Dept Expenses / Salaries</label>
+        <div class="scn-input-wrap"><span class="prefix">$</span><input type="number" id="staged_exp" value="95000" min="0" step="5000" oninput="renderScenario('staged')"/></div>
+        <div class="scn-hint">Annual · e.g. associate $80K + dept head $15K</div>
+      </div>
       <div class="scn-derived">
         <div class="dl">Revenue yield on AUM</div>
         <div class="dv" id="staged_yield">—</div>
@@ -853,6 +870,13 @@ tr:hover td{background:var(--bg);}
       <div class="panel-title">Revenue split by party — 10-year view</div>
       <p class="panel-intro">Annual revenue divided across the three parties. Years 1–6 run at 50 / 25 / 25 (original advisor / NWAM advisors / firm); from Year 7 the advisor is fully bought out and the split becomes 75 / 25.</p>
       <div class="chart-wrap" style="height:320px;"><canvas id="staged_chart" role="img" aria-label="Revenue split chart"></canvas></div>
+    </div>
+
+    <!-- NUMBERS BREAKDOWN -->
+    <div class="model-panel" style="margin-bottom:1.25rem;">
+      <div class="panel-title">Numbers breakdown</div>
+      <p class="panel-intro">Per-year figures for each phase and the 10-year cumulative. Dept expenses / salaries are a firm cost, deducted from the firm's share to give firm net.</p>
+      <div class="table-wrap"><table id="staged_breakdown"></table></div>
     </div>
 
     <!-- SUMMARY CARDS -->
@@ -1370,30 +1394,32 @@ function scnSplits(year) {
 function renderScenario(key) {
   const aum = parseFloat(document.getElementById(key + '_aum').value) || 0;
   const rev = parseFloat(document.getElementById(key + '_rev').value) || 0;
+  const exp = parseFloat(document.getElementById(key + '_exp').value) || 0;
 
   // Derived yield
   const yieldEl = document.getElementById(key + '_yield');
   yieldEl.textContent = aum > 0 ? (rev / aum * 100).toFixed(2) + '%' : '—';
 
   // Per-year data
-  const labels = [], advisor = [], dept = [], firm = [];
-  let tAdvisor = 0, tDept = 0, tFirm = 0;
+  const labels = [], advisor = [], dept = [], firm = [], deptExp = [];
+  let tAdvisor = 0, tDept = 0, tFirm = 0, tExp = 0;
   for (let y = 1; y <= SCN_YEARS; y++) {
     const [sa, sd, sf] = scnSplits(y);
     const a = rev * sa, d = rev * sd, fm = rev * sf;
     labels.push('Yr ' + y);
-    advisor.push(a); dept.push(d); firm.push(fm);
-    tAdvisor += a; tDept += d; tFirm += fm;
+    advisor.push(a); dept.push(d); firm.push(fm); deptExp.push(exp);
+    tAdvisor += a; tDept += d; tFirm += fm; tExp += exp;
   }
 
-  // Chart
+  // Chart — stacked revenue bars + dept expenses overlay line (distinct color)
   if (scnCharts[key]) scnCharts[key].destroy();
   scnCharts[key] = new Chart(document.getElementById(key + '_chart'), {
     type: 'bar',
     data: { labels, datasets: [
       { label: 'Original Advisor', data: advisor, backgroundColor: '#6b7a8d', stack: 's' },
       { label: 'NWAM Advisors (Dept)', data: dept, backgroundColor: '#1a7a4a', stack: 's' },
-      { label: 'NWAM Firm', data: firm, backgroundColor: '#1882ed', stack: 's' }
+      { label: 'NWAM Firm', data: firm, backgroundColor: '#1882ed', stack: 's' },
+      { type: 'line', label: 'Dept expenses / salaries', data: deptExp, borderColor: '#c0392b', backgroundColor: '#c0392b', borderWidth: 2, borderDash: [6, 4], pointRadius: 2, pointBackgroundColor: '#c0392b', fill: false, order: 0 }
     ]},
     options: {
       responsive: true, maintainAspectRatio: false,
@@ -1413,6 +1439,35 @@ function renderScenario(key) {
     scnCard('Original Advisor', tAdvisor, 'Yrs 1–6 at 50% · then bought out') +
     scnCard('NWAM Advisors (Dept)', tDept, 'Flat 25% across all ' + SCN_YEARS + ' yrs') +
     scnCard('NWAM Firm', tFirm, '25% yrs 1–6 → 75% yr 7+');
+
+  // Numbers breakdown table
+  const p1 = SCN_SPLIT_YEAR, p2 = SCN_YEARS - SCN_SPLIT_YEAR;  // 6 and 4
+  const firmNet1 = rev * 0.25 - exp, firmNet2 = rev * 0.75 - exp;
+  const firmNetTot = tFirm - tExp;
+  const money = (v, neg) => {
+    const col = neg ? 'var(--red)' : (v < 0 ? 'var(--red)' : 'var(--ink)');
+    return '<td style="color:' + col + ';">' + (neg ? '−' : '') + fmt(Math.abs(v)) + '</td>';
+  };
+  const netCol = v => v >= 0 ? 'var(--green)' : 'var(--red)';
+  document.getElementById(key + '_breakdown').innerHTML =
+    '<thead style="background:#1882ed;"><tr>' +
+      '<th style="color:#fff;border-bottom:none;">Line item</th>' +
+      '<th style="color:#fff;border-bottom:none;">Yrs 1–6 /yr</th>' +
+      '<th style="color:#fff;border-bottom:none;">Yr 7+ /yr</th>' +
+      '<th style="color:#fff;border-bottom:none;">10-yr total</th>' +
+    '</tr></thead><tbody>' +
+      '<tr><td style="color:var(--ink-soft);">Gross revenue</td>' + money(rev) + money(rev) + money(rev * SCN_YEARS) + '</tr>' +
+      '<tr><td style="color:var(--ink-soft);">Original Advisor (50% → 0)</td>' + money(rev * 0.5) + money(0) + money(rev * 0.5 * p1) + '</tr>' +
+      '<tr><td style="color:var(--ink-soft);">NWAM Advisors — Dept (25%)</td>' + money(rev * 0.25) + money(rev * 0.25) + money(tDept) + '</tr>' +
+      '<tr><td style="color:var(--ink-soft);">NWAM Firm — gross (25% → 75%)</td>' + money(rev * 0.25) + money(rev * 0.75) + money(tFirm) + '</tr>' +
+      '<tr><td style="color:var(--ink-soft);">Dept expenses / salaries</td>' + money(exp, true) + money(exp, true) + money(tExp, true) + '</tr>' +
+      '<tr style="font-weight:600;background:var(--blue-xlight);">' +
+        '<td style="color:var(--blue);">Firm net (share − dept exp)</td>' +
+        '<td style="color:' + netCol(firmNet1) + ';">' + fmt(firmNet1) + '</td>' +
+        '<td style="color:' + netCol(firmNet2) + ';">' + fmt(firmNet2) + '</td>' +
+        '<td style="color:' + netCol(firmNetTot) + ';">' + fmt(firmNetTot) + '</td>' +
+      '</tr>' +
+    '</tbody>';
 }
 function scnCard(title, total, sub) {
   return '<div style="background:var(--white);border:1px solid var(--border-soft);border-top:3px solid var(--blue);border-radius:6px;padding:1.25rem;">' +
