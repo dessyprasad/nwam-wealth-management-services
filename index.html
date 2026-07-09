@@ -239,6 +239,10 @@ tr:hover td{background:var(--bg);}
 #slide-poloko #poloko_breakdown th{padding:6px 6px;letter-spacing:0.02em;white-space:nowrap;}
 #slide-poloko #poloko_breakdown td{padding:5px 6px;}
 #slide-poloko #poloko_breakdown th:first-child,#slide-poloko #poloko_breakdown td:first-child{padding-left:2px;}
+#slide-fa2 .slide-inner{max-width:none;padding-left:1.75rem;padding-right:1.75rem;}
+#slide-fa2 table{font-size:12.5px;}
+#slide-fa2 th{padding:7px 9px;white-space:nowrap;}
+#slide-fa2 td{padding:7px 9px;}
 </style>
 </head>
 <body>
@@ -254,7 +258,8 @@ tr:hover td{background:var(--bg);}
     <li><button onclick="goTo(5,this)"><span class="nav-step-circle"></span>Final Analysis</button></li>
     <li><button onclick="goTo(6,this)"><span class="nav-step-circle"></span>Practice Buyout Model</button></li>
     <li><button onclick="goTo(7,this)"><span class="nav-step-circle"></span>Poloko Example</button></li>
-    <li style="display:none;"><button onclick="goTo(8,this)"><span class="nav-step-circle"></span>Advisor Timing</button></li>
+    <li><button onclick="goTo(8,this)"><span class="nav-step-circle"></span>Final Analysis 2</button></li>
+    <li style="display:none;"><button onclick="goTo(9,this)"><span class="nav-step-circle"></span>Advisor Timing</button></li>
   </ul>
   <div class="nav-right"><div class="nav-dot"></div> Live model</div>
   <div class="nav-bottom">
@@ -938,6 +943,57 @@ tr:hover td{background:var(--bg);}
   </div>
 </div>
 
+<!-- ═══ SLIDE: FINAL ANALYSIS 2 ═══ -->
+<div class="slide" id="slide-fa2">
+  <div class="slide-inner">
+    <div class="slide-header" style="margin-bottom:1.25rem;">
+      <div class="slide-num">Section 08</div>
+      <div class="slide-title">Final Analysis 2</div>
+      <p class="slide-intro">Profitability of the two buyout structures side by side, under identical assumptions — the conceptual <strong>Practice Buyout Model</strong> vs. the real <strong>Poloko Example</strong> — and a breakdown of exactly what drives the gap.</p>
+    </div>
+
+    <!-- INPUTS -->
+    <div class="scn-inputs">
+      <div class="scn-field">
+        <label>Annual Revenue</label>
+        <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="fa2_rev" value="500,000" oninput="fmtInput(this,'fa2')"/></div>
+        <div class="scn-hint">Same book revenue for both models</div>
+      </div>
+      <div class="scn-field">
+        <label>Dept Expenses / Salaries</label>
+        <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="fa2_exp" value="95,000" oninput="fmtInput(this,'fa2')"/></div>
+        <div class="scn-hint">Annual servicing cost · both models</div>
+      </div>
+      <div class="scn-field">
+        <label>Buyout Purchase Price</label>
+        <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="fa2_price" value="1,000,000" oninput="fmtInput(this,'fa2')"/></div>
+        <div class="scn-hint">Separate lump — Practice Buyout Model only</div>
+      </div>
+    </div>
+
+    <div class="model-panel" style="margin-bottom:1.25rem;">
+      <div class="panel-title">Profitability side by side</div>
+      <p class="panel-intro">10-year figures under the same revenue and expense assumptions. Firm net is what NWAM keeps after dept expenses (and, for the Practice Buyout Model, the separate purchase price).</p>
+      <div class="table-wrap"><table id="fa2_compare"></table></div>
+    </div>
+
+    <div class="model-panel" style="margin-bottom:1.25rem;">
+      <div class="panel-title">What drives the difference</div>
+      <p class="panel-intro">Bridging from the Practice Buyout Model's 10-year firm net to the Poloko Example's, one driver at a time.</p>
+      <div class="table-wrap"><table id="fa2_bridge"></table></div>
+    </div>
+
+    <div class="insight">
+      <strong>Why the Poloko structure is more profitable — two causes:</strong>
+      <ul style="margin:0.6rem 0 0;padding-left:1.25rem;display:flex;flex-direction:column;gap:0.5rem;font-size:inherit;">
+        <li><strong>NWAM keeps a bigger revenue share.</strong> In the Practice Buyout Model a standing 25% is carved out to the servicing advisors (dept) forever, so NWAM sees only 25% during the buyout and 75% after. In the Poloko deal NWAM retains 50% during the payout and 100% once it ends — servicing is just a flat salary cost, not a perpetual revenue share.</li>
+        <li><strong>No separate purchase price.</strong> The Practice Buyout Model pays a lump-sum purchase price <em>on top of</em> the advisor's revenue stream. In the Poloko deal the 50% stream <em>is</em> the purchase price — there is no additional outlay, so the acquisition self-funds from the book's own revenue.</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
 <!-- ═══ SLIDE 6: ADVISOR TIMING ═══ -->
 <div class="slide" id="slide-4" style="display:none;">
   <div class="slide-inner">
@@ -1037,7 +1093,7 @@ tr:hover td{background:var(--bg);}
 <script>
 // ─── NAV ─────────────────────────────────────────────────────────────────────
 let currentSlide = 0;
-const TOTAL_SLIDES = 9;
+const TOTAL_SLIDES = 10;
 function updateNavBtns() {}
 function navBack() {}
 function navNext() {}
@@ -1448,8 +1504,67 @@ function fmtInput(el, key) {
   let pos = 0, seen = 0;
   while (pos < formatted.length && seen < digitsBefore) { if (formatted[pos] >= '0' && formatted[pos] <= '9') seen++; pos++; }
   try { el.setSelectionRange(pos, pos); } catch (e) {}
-  if (key === 'poloko') renderPoloko(); else renderScenario(key);
+  if (key === 'poloko') renderPoloko(); else if (key === 'fa2') renderFA2(); else renderScenario(key);
 }
+// ─── FINAL ANALYSIS 2 (profitability comparison of the two buyout structures) ───
+function renderFA2() {
+  const numVal = id => parseFloat((document.getElementById(id).value || '').replace(/[^0-9.]/g, '')) || 0;
+  const rev = numVal('fa2_rev');
+  const exp = numVal('fa2_exp');
+  const price = numVal('fa2_price');
+  const YEARS = 10;
+
+  // Practice Buyout Model: 50/25/25 yrs 1-6 -> 75/25 yr 7+; separate purchase amortized over 6 yrs
+  const grossB = rev * 0.25 * 6 + rev * 0.75 * 4;
+  const expTot = exp * YEARS;
+  const netB = grossB - expTot - price;
+  // Poloko: 50% to seller yrs 1-5 (that IS the purchase) -> NWAM 50% yrs 1-5, 100% yr 6+
+  const grossP = rev * 0.5 * 5 + rev * 1.0 * 5;
+  const netP = grossP - expTot;
+
+  const beYear = (perYear) => { let c = 0; for (let y = 1; y <= YEARS; y++) { c += perYear(y); if (c >= 0) return y; } return 0; };
+  const beB = beYear(y => (y <= 6 ? rev * 0.25 - exp - price / 6 : rev * 0.75 - exp));
+  const beP = beYear(y => (y <= 5 ? rev * 0.5 - exp : rev * 1.0 - exp));
+
+  const fmtC = n => {
+    const a = Math.abs(n), sg = n < 0 ? '-' : '';
+    if (a >= 999500) return sg + '$' + (a / 1000000).toFixed(2) + 'M';
+    if (a >= 1000) return sg + '$' + Math.round(a / 1000) + 'K';
+    return sg + '$' + Math.round(a);
+  };
+  const cell = (v, opt) => { opt = opt || {}; const col = opt.neg ? 'var(--red)' : (opt.net ? (v >= 0 ? 'var(--green)' : 'var(--red)') : 'var(--ink)'); const w = (opt.net ? 'font-weight:600;' : ''); return '<td style="' + w + 'color:' + col + ';white-space:nowrap;">' + (opt.neg && Math.abs(v) > 0.5 ? '−' : '') + fmtC(Math.abs(v)) + '</td>'; };
+  const plain = t => '<td style="color:var(--ink-soft);">' + t + '</td>';
+
+  // Comparison table
+  document.getElementById('fa2_compare').innerHTML =
+    '<thead style="background:#1882ed;"><tr>' +
+      '<th style="color:#fff;border-bottom:none;">Metric (10-yr)</th>' +
+      '<th style="color:#fff;border-bottom:none;">Practice Buyout Model</th>' +
+      '<th style="color:#fff;border-bottom:none;">Poloko Example</th>' +
+    '</tr></thead><tbody>' +
+      '<tr>' + plain('NWAM / firm gross revenue') + cell(grossB) + cell(grossP) + '</tr>' +
+      '<tr>' + plain('Dept expenses / salaries') + cell(expTot, {neg:true}) + cell(expTot, {neg:true}) + '</tr>' +
+      '<tr>' + plain('Separate purchase price') + cell(price, {neg:true}) + plain('—') + '</tr>' +
+      '<tr style="font-weight:600;background:var(--blue-xlight);"><td style="color:var(--blue);">Firm net</td>' + cell(netB, {net:true}) + cell(netP, {net:true}) + '</tr>' +
+      '<tr>' + plain('Cumulative break-even') + plain(beB ? ('Year ' + beB) : 'never') + plain(beP ? ('Year ' + beP) : 'never') + '</tr>' +
+    '</tbody>';
+
+  // Bridge: buyout net -> poloko net
+  const shareDiff = grossP - grossB;   // higher NWAM revenue share
+  const purchaseDiff = price;          // no separate purchase in Poloko
+  const bridgeRow = (label, val, opt) => '<tr>' + plain(label) + (opt === 'net' ? '<td style="font-weight:600;color:' + (val >= 0 ? 'var(--green)' : 'var(--red)') + ';white-space:nowrap;">' + fmtC(val) + '</td>' : '<td style="white-space:nowrap;color:var(--green);">+' + fmtC(val) + '</td>') + '</tr>';
+  document.getElementById('fa2_bridge').innerHTML =
+    '<thead style="background:#1882ed;"><tr>' +
+      '<th style="color:#fff;border-bottom:none;">Step</th>' +
+      '<th style="color:#fff;border-bottom:none;">10-yr firm net</th>' +
+    '</tr></thead><tbody>' +
+      '<tr style="font-weight:600;"><td>Practice Buyout Model net</td><td style="font-weight:600;color:' + (netB >= 0 ? 'var(--green)' : 'var(--red)') + ';white-space:nowrap;">' + fmtC(netB) + '</td></tr>' +
+      bridgeRow('+ NWAM keeps a bigger revenue share (50/100 vs 25/75)', shareDiff) +
+      bridgeRow('+ No separate purchase price (50% stream is the purchase)', purchaseDiff) +
+      '<tr style="font-weight:700;background:var(--blue-xlight);"><td style="color:var(--blue);">Poloko Example net</td><td style="font-weight:700;color:' + (netP >= 0 ? 'var(--green)' : 'var(--red)') + ';white-space:nowrap;">' + fmtC(netP) + '</td></tr>' +
+    '</tbody>';
+}
+
 // ─── POLOKO EXAMPLE (actual buyout: 50% to seller for 5 yrs = purchase, then 100% to NWAM) ──
 const POLOKO_PAYOUT_YEARS = 5;   // 20 quarters
 const POLOKO_HORIZON = 10;
@@ -1463,7 +1578,7 @@ function renderPoloko() {
 
   const fmtC = n => {
     const a = Math.abs(n), sg = n < 0 ? '-' : '';
-    if (a >= 1000000) return sg + '$' + (a / 1000000).toFixed(2) + 'M';
+    if (a >= 999500) return sg + '$' + (a / 1000000).toFixed(2) + 'M';
     if (a >= 1000) return sg + '$' + Math.round(a / 1000) + 'K';
     return sg + '$' + Math.round(a);
   };
@@ -1493,7 +1608,7 @@ function renderPoloko() {
   document.getElementById('poloko_cards').innerHTML =
     scnCard('Purchase price (to seller)', tSeller, '50% of AGR × 5 yrs · ≈ 250% of annual') +
     scnCard('Firm net · yrs 1–5', rev * 0.5 - exp, 'per yr · 50% AGR − dept expenses') +
-    scnCard('Firm net · yr 6+', rev - exp, 'per yr · 100% AGR − dept expenses');
+    scnCard('Firm net · 10 yrs', firmNetTot, breakevenYear ? ('Cumulative break-even in Year ' + breakevenYear + ' · 10-yr total') : ('No break-even by Year ' + POLOKO_HORIZON));
 
   let body = '';
   rows.forEach(r => {
@@ -1558,7 +1673,7 @@ function renderScenario(key) {
   // Compact currency for the dense year-by-year table
   const fmtC = n => {
     const a = Math.abs(n), sg = n < 0 ? '-' : '';
-    if (a >= 1000000) return sg + '$' + (a / 1000000).toFixed(2) + 'M';
+    if (a >= 999500) return sg + '$' + (a / 1000000).toFixed(2) + 'M';
     if (a >= 1000) return sg + '$' + Math.round(a / 1000) + 'K';
     return sg + '$' + Math.round(a);
   };
@@ -1608,6 +1723,7 @@ function scnCard(title, total, sub) {
 }
 renderScenario('staged');
 renderPoloko();
+renderFA2();
 </script>
 </body>
 </html>
