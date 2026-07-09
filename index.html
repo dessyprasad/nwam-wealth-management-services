@@ -228,6 +228,12 @@ tr:hover td{background:var(--bg);}
 .scn-derived{background:var(--blue-xlight);border:1px solid var(--border);border-radius:6px;padding:0.6rem 0.85rem;display:flex;flex-direction:column;gap:4px;justify-content:center;}
 .scn-derived .dl{font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-soft);}
 .scn-derived .dv{font-family:'DM Serif Display',serif;font-size:22px;color:var(--blue);line-height:1;}
+/* PRACTICE BUYOUT MODEL — widen page + compact table so the year-by-year table fits without scroll */
+#slide-staged .slide-inner{max-width:none;padding-left:1.75rem;padding-right:1.75rem;}
+#slide-staged #staged_breakdown{font-size:11.5px;}
+#slide-staged #staged_breakdown th{padding:6px 6px;letter-spacing:0.02em;white-space:nowrap;}
+#slide-staged #staged_breakdown td{padding:5px 6px;}
+#slide-staged #staged_breakdown th:first-child,#slide-staged #staged_breakdown td:first-child{padding-left:2px;}
 </style>
 </head>
 <body>
@@ -1361,13 +1367,20 @@ function renderScenario(key) {
     scnCard('NWAM Advisors (Dept)', tDept, 'Flat 25% across all ' + SCN_YEARS + ' yrs') +
     scnCard('Firm net · ' + SCN_YEARS + ' yrs', firmNetTot, breakevenYear ? ('Cumulative break-even in Year ' + breakevenYear) : ('No break-even by Year ' + SCN_YEARS));
 
+  // Compact currency for the dense year-by-year table
+  const fmtC = n => {
+    const a = Math.abs(n), sg = n < 0 ? '-' : '';
+    if (a >= 1000000) return sg + '$' + (a / 1000000).toFixed(2) + 'M';
+    if (a >= 1000) return sg + '$' + Math.round(a / 1000) + 'K';
+    return sg + '$' + Math.round(a);
+  };
   // Cell helpers
   const money = (v, neg) => {
     const showNeg = neg && Math.abs(v) > 0.5;
     const col = showNeg ? 'var(--red)' : (v < 0 ? 'var(--red)' : 'var(--ink)');
-    return '<td style="color:' + col + ';white-space:nowrap;">' + (showNeg ? '−' : '') + fmt(Math.abs(v)) + '</td>';
+    return '<td style="color:' + col + ';white-space:nowrap;">' + (showNeg ? '−' : '') + fmtC(Math.abs(v)) + '</td>';
   };
-  const netCell = v => '<td style="font-weight:600;white-space:nowrap;color:' + (v >= 0 ? 'var(--green)' : 'var(--red)') + ';">' + fmt(v) + '</td>';
+  const netCell = v => '<td style="font-weight:600;white-space:nowrap;color:' + (v >= 0 ? 'var(--green)' : 'var(--red)') + ';">' + fmtC(v) + '</td>';
 
   // Per-year table body
   let body = '';
@@ -1389,13 +1402,13 @@ function renderScenario(key) {
     '<thead style="background:#1882ed;"><tr>' +
       '<th style="color:#fff;border-bottom:none;">Year</th>' +
       '<th style="color:#fff;border-bottom:none;">Gross</th>' +
-      '<th style="color:#fff;border-bottom:none;">Orig. Advisor</th>' +
-      '<th style="color:#fff;border-bottom:none;">NWAM Advisors</th>' +
-      '<th style="color:#fff;border-bottom:none;">Firm gross</th>' +
+      '<th style="color:#fff;border-bottom:none;">Advisor</th>' +
+      '<th style="color:#fff;border-bottom:none;">Dept</th>' +
+      '<th style="color:#fff;border-bottom:none;">Firm</th>' +
       '<th style="color:#fff;border-bottom:none;">Dept exp</th>' +
       '<th style="color:#fff;border-bottom:none;">Purchase</th>' +
       '<th style="color:#fff;border-bottom:none;">Firm net</th>' +
-      '<th style="color:#fff;border-bottom:none;">Cumulative</th>' +
+      '<th style="color:#fff;border-bottom:none;">Cum. net</th>' +
     '</tr></thead><tbody>' + body + '</tbody>';
 }
 function scnCard(title, total, sub) {
