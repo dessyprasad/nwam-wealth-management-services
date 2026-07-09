@@ -234,6 +234,11 @@ tr:hover td{background:var(--bg);}
 #slide-staged #staged_breakdown th{padding:6px 6px;letter-spacing:0.02em;white-space:nowrap;}
 #slide-staged #staged_breakdown td{padding:5px 6px;}
 #slide-staged #staged_breakdown th:first-child,#slide-staged #staged_breakdown td:first-child{padding-left:2px;}
+#slide-poloko .slide-inner{max-width:none;padding-left:1.75rem;padding-right:1.75rem;}
+#slide-poloko #poloko_breakdown{font-size:11.5px;}
+#slide-poloko #poloko_breakdown th{padding:6px 6px;letter-spacing:0.02em;white-space:nowrap;}
+#slide-poloko #poloko_breakdown td{padding:5px 6px;}
+#slide-poloko #poloko_breakdown th:first-child,#slide-poloko #poloko_breakdown td:first-child{padding-left:2px;}
 </style>
 </head>
 <body>
@@ -248,7 +253,8 @@ tr:hover td{background:var(--bg);}
     <li><button onclick="goTo(4,this)"><span class="nav-step-circle"></span>Revenue Modeling</button></li>
     <li><button onclick="goTo(5,this)"><span class="nav-step-circle"></span>Final Analysis</button></li>
     <li><button onclick="goTo(6,this)"><span class="nav-step-circle"></span>Practice Buyout Model</button></li>
-    <li style="display:none;"><button onclick="goTo(7,this)"><span class="nav-step-circle"></span>Advisor Timing</button></li>
+    <li><button onclick="goTo(7,this)"><span class="nav-step-circle"></span>Poloko Example</button></li>
+    <li style="display:none;"><button onclick="goTo(8,this)"><span class="nav-step-circle"></span>Advisor Timing</button></li>
   </ul>
   <div class="nav-right"><div class="nav-dot"></div> Live model</div>
   <div class="nav-bottom">
@@ -833,6 +839,105 @@ tr:hover td{background:var(--bg);}
   </div>
 </div>
 
+<!-- ═══ SLIDE: POLOKO EXAMPLE ═══ -->
+<div class="slide" id="slide-poloko">
+  <div class="slide-inner">
+    <div class="slide-header" style="margin-bottom:1.25rem;">
+      <div class="slide-num">Section 07</div>
+      <div class="slide-title">Poloko Example</div>
+      <p class="slide-intro">The real buyout NWAM completed — the purchase of Ann Poloko LLC's client book — laid out the way future buyouts are structured. NWAM pays the retiring advisor 50% of the book's revenue for 5 years (that stream <em>is</em> the purchase price), keeps the other 50% to cover servicing, then keeps 100% once the payout ends.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;">
+      <div style="background:var(--white);border:1px solid var(--border-soft);border-radius:6px;padding:1rem 1.25rem;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:6px;">Seller</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:19px;color:var(--blue);line-height:1.15;margin-bottom:4px;">Ann Poloko LLC</div>
+        <div style="font-size:12px;color:var(--ink-soft);">Retiring advisor's book</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border-soft);border-radius:6px;padding:1rem 1.25rem;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:6px;">Buyer</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:19px;color:var(--blue);line-height:1.15;margin-bottom:4px;">NWAM, LLC</div>
+        <div style="font-size:12px;color:var(--ink-soft);">dba Northwest Asset Management</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border-soft);border-radius:6px;padding:1rem 1.25rem;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:6px;">Effective date</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:19px;color:var(--blue);line-height:1.15;margin-bottom:4px;">Sept 1, 2023</div>
+        <div style="font-size:12px;color:var(--ink-soft);">Closing within 15 days of signing</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border-soft);border-radius:6px;padding:1rem 1.25rem;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:6px;">Payout term</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:19px;color:var(--blue);line-height:1.15;margin-bottom:4px;">20 quarters</div>
+        <div style="font-size:12px;color:var(--ink-soft);">5 years of quarterly installments</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border-soft);border-radius:6px;padding:1rem 1.25rem;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:6px;">Transition period</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:19px;color:var(--blue);line-height:1.15;margin-bottom:4px;">1 year</div>
+        <div style="font-size:12px;color:var(--ink-soft);">Closing → Retirement Date</div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border-soft);border-radius:6px;padding:1rem 1.25rem;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:6px;">Non-solicitation</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:19px;color:var(--blue);line-height:1.15;margin-bottom:4px;">5 years</div>
+        <div style="font-size:12px;color:var(--ink-soft);">From the closing date</div>
+      </div>
+    </div>
+
+    <div class="insight" style="margin-bottom:1.5rem;">
+      <strong>Structure:</strong> For the <strong>5-year payout (20 quarters)</strong>, <strong>50%</strong> of Adjusted Gross Revenue goes to the retiring advisor as the purchase price and <strong>50%</strong> stays with NWAM. From <strong>Year 6 on</strong> the advisor is fully paid out and NWAM keeps <strong>100%</strong>. AGR is net of custodian wrap &amp; transaction fees; the payout trues up to actual revenue each quarter.
+    </div>
+
+    <!-- INPUTS -->
+    <div class="scn-inputs">
+      <div class="scn-field">
+        <label>Practice AUM</label>
+        <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="poloko_aum" value="50,000,000" oninput="fmtInput(this,'poloko')"/></div>
+        <div class="scn-hint">Total assets under management</div>
+      </div>
+      <div class="scn-field">
+        <label>Annual Revenue (AGR)</label>
+        <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="poloko_rev" value="500,000" oninput="fmtInput(this,'poloko')"/></div>
+        <div class="scn-hint">Net of custodian wrap &amp; transaction fees</div>
+      </div>
+      <div class="scn-field">
+        <label>Dept Expenses / Salaries</label>
+        <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="poloko_exp" value="95,000" oninput="fmtInput(this,'poloko')"/></div>
+        <div class="scn-hint">Annual cost to service the acquired book</div>
+      </div>
+    </div>
+
+    <!-- NUMBERS BREAKDOWN -->
+    <div class="model-panel" style="margin-bottom:1.25rem;">
+      <div class="panel-title">Numbers breakdown</div>
+      <p class="panel-intro">Per-year figures. The advisor's 50% (years 1–5) is the purchase price — there is no separate up-front payment. Firm net = NWAM's share minus dept expenses.</p>
+      <div class="table-wrap"><table id="poloko_breakdown"></table></div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem;" id="poloko_cards"></div>
+
+    <div class="scn-derived" style="max-width:280px;margin-bottom:1.5rem;">
+      <div class="dl">Revenue yield on AUM</div>
+      <div class="dv" id="poloko_yield">—</div>
+    </div>
+
+    <div class="model-panel" style="margin-bottom:1.5rem;">
+      <div class="panel-title">Key terms</div>
+      <ul style="margin:0.5rem 0 0;padding-left:1.25rem;display:flex;flex-direction:column;gap:0.5rem;font-size:13.5px;color:var(--ink);line-height:1.6;">
+        <li><strong>Purchase price:</strong> 50% of AGR over 20 quarters (≈ 250% of annual revenue); estimated at 10× quarterly AGR at closing. Paid in 20 quarterly installments directly to the Member.</li>
+        <li><strong>Transition:</strong> 1-year Transition Services Agreement; Retirement Date is the first anniversary of closing; the Member notifies clients and assists the handover.</li>
+        <li><strong>Non-solicitation:</strong> 5 years from closing.</li>
+        <li><strong>Death / disability:</strong> if within 12 months of closing, payments continue to the estate or designee on the same schedule.</li>
+        <li><strong>Assets:</strong> client accounts + goodwill only; NWAM assumes no liabilities. Price allocation (IRC §1060 / Form 8594): $25,000 to the non-solicitation covenant, remainder to intangibles &amp; goodwill.</li>
+      </ul>
+    </div>
+
+    <div style="display:flex;align-items:flex-start;gap:10px;background:var(--blue-xlight);border:1px solid var(--border);border-radius:6px;padding:0.85rem 1rem;">
+      <span style="font-size:15px;line-height:1;margin-top:1px;flex-shrink:0;">📝</span>
+      <div style="font-size:13px;color:var(--ink);line-height:1.6;"><strong>Original vs. amended:</strong> same economics, restructured language — the amendment expresses the price as 50% of AGR over 20 quarters (estimated 10× AGR) paid directly to the Member in quarterly installments, formalizes the 1-year transition via a Transition Services Agreement, and clarifies the non-solicitation term to five (5) years.</div>
+    </div>
+
+  </div>
+</div>
+
 <!-- ═══ SLIDE 6: ADVISOR TIMING ═══ -->
 <div class="slide" id="slide-4" style="display:none;">
   <div class="slide-inner">
@@ -932,7 +1037,7 @@ tr:hover td{background:var(--bg);}
 <script>
 // ─── NAV ─────────────────────────────────────────────────────────────────────
 let currentSlide = 0;
-const TOTAL_SLIDES = 8;
+const TOTAL_SLIDES = 9;
 function updateNavBtns() {}
 function navBack() {}
 function navNext() {}
@@ -1343,7 +1448,77 @@ function fmtInput(el, key) {
   let pos = 0, seen = 0;
   while (pos < formatted.length && seen < digitsBefore) { if (formatted[pos] >= '0' && formatted[pos] <= '9') seen++; pos++; }
   try { el.setSelectionRange(pos, pos); } catch (e) {}
-  renderScenario(key);
+  if (key === 'poloko') renderPoloko(); else renderScenario(key);
+}
+// ─── POLOKO EXAMPLE (actual buyout: 50% to seller for 5 yrs = purchase, then 100% to NWAM) ──
+const POLOKO_PAYOUT_YEARS = 5;   // 20 quarters
+const POLOKO_HORIZON = 10;
+function renderPoloko() {
+  const numVal = id => parseFloat((document.getElementById(id).value || '').replace(/[^0-9.]/g, '')) || 0;
+  const aum = numVal('poloko_aum');
+  const rev = numVal('poloko_rev');
+  const exp = numVal('poloko_exp');
+
+  document.getElementById('poloko_yield').textContent = aum > 0 ? (rev / aum * 100).toFixed(2) + '%' : '—';
+
+  const fmtC = n => {
+    const a = Math.abs(n), sg = n < 0 ? '-' : '';
+    if (a >= 1000000) return sg + '$' + (a / 1000000).toFixed(2) + 'M';
+    if (a >= 1000) return sg + '$' + Math.round(a / 1000) + 'K';
+    return sg + '$' + Math.round(a);
+  };
+  const money = (v, neg) => {
+    const showNeg = neg && Math.abs(v) > 0.5;
+    const col = showNeg ? 'var(--red)' : (v < 0 ? 'var(--red)' : 'var(--ink)');
+    return '<td style="color:' + col + ';white-space:nowrap;">' + (showNeg ? '−' : '') + fmtC(Math.abs(v)) + '</td>';
+  };
+  const netCell = v => '<td style="font-weight:600;white-space:nowrap;color:' + (v >= 0 ? 'var(--green)' : 'var(--red)') + ';">' + fmtC(v) + '</td>';
+
+  const rows = [];
+  let cum = 0, breakevenYear = 0;
+  let tSeller = 0, tNwam = 0, tExp = 0;
+  for (let y = 1; y <= POLOKO_HORIZON; y++) {
+    const inPayout = y <= POLOKO_PAYOUT_YEARS;
+    const seller = inPayout ? rev * 0.5 : 0;
+    const nwamGross = inPayout ? rev * 0.5 : rev;
+    const firmNet = nwamGross - exp;
+    cum += firmNet;
+    if (breakevenYear === 0 && cum >= 0) breakevenYear = y;
+    rows.push({ y, seller, nwamGross, exp, firmNet, cum });
+    tSeller += seller; tNwam += nwamGross; tExp += exp;
+  }
+  const firmNetTot = tNwam - tExp;
+
+  // Summary cards
+  document.getElementById('poloko_cards').innerHTML =
+    scnCard('Purchase price (to seller)', tSeller, '50% of AGR × 5 yrs · ≈ 250% of annual') +
+    scnCard('Firm net · yrs 1–5', rev * 0.5 - exp, 'per yr · 50% AGR − dept expenses') +
+    scnCard('Firm net · yr 6+', rev - exp, 'per yr · 100% AGR − dept expenses');
+
+  let body = '';
+  rows.forEach(r => {
+    const be = r.y === breakevenYear;
+    const rowStyle = be ? ' style="background:var(--green-light);"' : '';
+    const yearCell = '<td style="font-weight:600;color:var(--ink);white-space:nowrap;">Year ' + r.y +
+      (be ? ' <span class="badge badge-g">Break-even</span>' : '') + '</td>';
+    body += '<tr' + rowStyle + '>' + yearCell + money(rev) + money(r.seller) + money(r.nwamGross) +
+      money(r.exp, true) + netCell(r.firmNet) + netCell(r.cum) + '</tr>';
+  });
+  body += '<tr style="font-weight:700;background:var(--blue-xlight);">' +
+    '<td style="color:var(--blue);white-space:nowrap;">' + POLOKO_HORIZON + '-yr total</td>' +
+    money(rev * POLOKO_HORIZON) + money(tSeller) + money(tNwam) + money(tExp, true) + netCell(firmNetTot) + '<td></td>' +
+  '</tr>';
+
+  document.getElementById('poloko_breakdown').innerHTML =
+    '<thead style="background:#1882ed;"><tr>' +
+      '<th style="color:#fff;border-bottom:none;">Year</th>' +
+      '<th style="color:#fff;border-bottom:none;">AGR</th>' +
+      '<th style="color:#fff;border-bottom:none;">To Seller</th>' +
+      '<th style="color:#fff;border-bottom:none;">NWAM gross</th>' +
+      '<th style="color:#fff;border-bottom:none;">Dept exp</th>' +
+      '<th style="color:#fff;border-bottom:none;">Firm net</th>' +
+      '<th style="color:#fff;border-bottom:none;">Cum. net</th>' +
+    '</tr></thead><tbody>' + body + '</tbody>';
 }
 function renderScenario(key) {
   const numVal = id => parseFloat((document.getElementById(id).value || '').replace(/[^0-9.]/g, '')) || 0;
@@ -1432,6 +1607,7 @@ function scnCard(title, total, sub) {
     '</div>';
 }
 renderScenario('staged');
+renderPoloko();
 </script>
 </body>
 </html>
