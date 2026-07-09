@@ -241,9 +241,8 @@ tr:hover td{background:var(--bg);}
     <li style="display:none;"><button onclick="goTo(3,this)"><span class="nav-step-circle"></span>Hurdles</button></li>
     <li><button onclick="goTo(4,this)"><span class="nav-step-circle"></span>Revenue Modeling</button></li>
     <li><button onclick="goTo(5,this)"><span class="nav-step-circle"></span>Final Analysis</button></li>
-    <li><button onclick="goTo(6,this)"><span class="nav-step-circle"></span>Full Practice Buyout</button></li>
-    <li><button onclick="goTo(7,this)"><span class="nav-step-circle"></span>Staged Buy — Year 6</button></li>
-    <li style="display:none;"><button onclick="goTo(8,this)"><span class="nav-step-circle"></span>Advisor Timing</button></li>
+    <li><button onclick="goTo(6,this)"><span class="nav-step-circle"></span>Practice Buyout Model</button></li>
+    <li style="display:none;"><button onclick="goTo(7,this)"><span class="nav-step-circle"></span>Advisor Timing</button></li>
   </ul>
   <div class="nav-right"><div class="nav-dot"></div> Live model</div>
   <div class="nav-bottom">
@@ -768,79 +767,13 @@ tr:hover td{background:var(--bg);}
   </div>
 </div>
 
-<!-- ═══ SLIDE: FULL PRACTICE BUYOUT ═══ -->
-<div class="slide" id="slide-full">
-  <div class="slide-inner">
-    <div class="slide-header" style="margin-bottom:1.25rem;">
-      <div class="slide-num">Section 05</div>
-      <div class="slide-title">Full practice buyout</div>
-      <p class="slide-intro">NWAM takes over the entire practice on day one. Enter the practice AUM and annual revenue to see how the book splits between the original advisor, the NWAM advisors servicing it, and the firm — before and after the Year 6 buyout.</p>
-    </div>
-
-    <div class="insight" style="margin-bottom:1.25rem;">
-      <strong>Structure:</strong> NWAM acquires the whole practice up front. For <strong>Years 1–6</strong> revenue splits <strong>50%</strong> to the original advisor, <strong>25%</strong> to the NWAM advisors, and <strong>25%</strong> to the firm. At the end of Year 6 the advisor is fully bought out and exits; from <strong>Year 7 on</strong> the split is <strong>75%</strong> firm / <strong>25%</strong> NWAM advisors.
-    </div>
-
-    <!-- INPUTS -->
-    <div class="scn-inputs">
-      <div class="scn-field">
-        <label>Practice AUM</label>
-        <div class="scn-input-wrap"><span class="prefix">$</span><input type="number" id="full_aum" value="50000000" min="0" step="1000000" oninput="renderScenario('full')"/></div>
-        <div class="scn-hint">Total assets under management</div>
-      </div>
-      <div class="scn-field">
-        <label>Annual Revenue</label>
-        <div class="scn-input-wrap"><span class="prefix">$</span><input type="number" id="full_rev" value="500000" min="0" step="10000" oninput="renderScenario('full')"/></div>
-        <div class="scn-hint">Gross annual revenue of the book</div>
-      </div>
-      <div class="scn-field">
-        <label>Dept Expenses / Salaries</label>
-        <div class="scn-input-wrap"><span class="prefix">$</span><input type="number" id="full_exp" value="95000" min="0" step="5000" oninput="renderScenario('full')"/></div>
-        <div class="scn-hint">Annual · e.g. associate $80K + dept head $15K</div>
-      </div>
-      <div class="scn-field">
-        <label>Practice Purchase Price</label>
-        <div class="scn-input-wrap"><span class="prefix">$</span><input type="number" id="full_price" value="1000000" min="0" step="50000" oninput="renderScenario('full')"/></div>
-        <div class="scn-hint">Total paid to acquire the practice · annualized over the 6-yr buyout</div>
-      </div>
-      <div class="scn-derived">
-        <div class="dl">Revenue yield on AUM</div>
-        <div class="dv" id="full_yield">—</div>
-      </div>
-    </div>
-
-    <!-- CHART -->
-    <div class="model-panel" style="margin-bottom:1.25rem;">
-      <div class="panel-title">Revenue split by party — 10-year view</div>
-      <p class="panel-intro">Annual revenue divided across the three parties. Years 1–6 run at 50 / 25 / 25 (original advisor / NWAM advisors / firm); from Year 7 the advisor is fully bought out and the split becomes 75 / 25.</p>
-      <div class="chart-wrap" style="height:320px;"><canvas id="full_chart" role="img" aria-label="Revenue split chart"></canvas></div>
-    </div>
-
-    <!-- NUMBERS BREAKDOWN -->
-    <div class="model-panel" style="margin-bottom:1.25rem;">
-      <div class="panel-title">Numbers breakdown</div>
-      <p class="panel-intro">Per-year figures for each phase and the 10-year cumulative. Dept expenses / salaries are a firm cost, deducted from the firm's share to give firm net.</p>
-      <div class="table-wrap"><table id="full_breakdown"></table></div>
-    </div>
-
-    <!-- SUMMARY CARDS -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem;" id="full_cards"></div>
-
-    <div style="display:flex;align-items:flex-start;gap:10px;background:var(--amber-light);border:1px solid rgba(245,158,11,0.35);border-radius:6px;padding:0.75rem 1rem;">
-      <span style="font-size:15px;line-height:1;margin-top:1px;flex-shrink:0;">⚠️</span>
-      <div style="font-size:13px;color:var(--ink);line-height:1.6;"><strong>Note:</strong> the practice purchase price is annualized evenly over the 6-year buyout window in the breakdown below. If the full buyout is paid as a single up-front lump instead, the per-year firm net in years 1–6 would differ — we can switch to a year-by-year payment schedule when the terms are set.</div>
-    </div>
-
-  </div>
-</div>
-
 <!-- ═══ SLIDE: STAGED BUY — YEAR 6 ═══ -->
 <div class="slide" id="slide-staged">
   <div class="slide-inner">
     <div class="slide-header" style="margin-bottom:1.25rem;">
       <div class="slide-num">Section 06</div>
-      <div class="slide-title">Staged buy — Year 6</div>
-      <p class="slide-intro">NWAM buys one-third of the practice up front, then acquires the remainder in stages, owning the whole practice by Year 6. Enter the practice AUM and annual revenue to model the revenue split across the same 6-year window.</p>
+      <div class="slide-title">Practice Buyout Model</div>
+      <p class="slide-intro">NWAM buys one-third of the practice up front, then acquires the remainder in stages, owning the whole practice by Year 6. Enter the practice AUM and annual revenue to model the revenue split and firm net across the 6-year buyout window.</p>
     </div>
 
     <div class="insight" style="margin-bottom:1.25rem;">
@@ -875,13 +808,6 @@ tr:hover td{background:var(--bg);}
       </div>
     </div>
 
-    <!-- CHART -->
-    <div class="model-panel" style="margin-bottom:1.25rem;">
-      <div class="panel-title">Revenue split by party — 10-year view</div>
-      <p class="panel-intro">Annual revenue divided across the three parties. Years 1–6 run at 50 / 25 / 25 (original advisor / NWAM advisors / firm); from Year 7 the advisor is fully bought out and the split becomes 75 / 25.</p>
-      <div class="chart-wrap" style="height:320px;"><canvas id="staged_chart" role="img" aria-label="Revenue split chart"></canvas></div>
-    </div>
-
     <!-- NUMBERS BREAKDOWN -->
     <div class="model-panel" style="margin-bottom:1.25rem;">
       <div class="panel-title">Numbers breakdown</div>
@@ -894,7 +820,7 @@ tr:hover td{background:var(--bg);}
 
     <div style="display:flex;align-items:flex-start;gap:10px;background:var(--amber-light);border:1px solid rgba(245,158,11,0.35);border-radius:6px;padding:0.75rem 1rem;">
       <span style="font-size:15px;line-height:1;margin-top:1px;flex-shrink:0;">⚠️</span>
-      <div style="font-size:13px;color:var(--ink);line-height:1.6;"><strong>Note:</strong> uses the same 50 / 25 / 25 revenue split as the full buyout. The practice purchase is annualized evenly over the 6-year buyout in the breakdown. The staged structure's actual cash timing (<em>1/3 up front, remainder to year 6</em>) can be modeled as a year-by-year schedule once the payment steps are defined.</div>
+      <div style="font-size:13px;color:var(--ink);line-height:1.6;"><strong>Note:</strong> the practice purchase is annualized evenly over the 6-year buyout in the breakdown. The actual staged cash timing (<em>1/3 up front, remainder to year 6</em>) can be modeled as a year-by-year payment schedule once the payment steps are defined.</div>
     </div>
 
   </div>
@@ -999,7 +925,7 @@ tr:hover td{background:var(--bg);}
 <script>
 // ─── NAV ─────────────────────────────────────────────────────────────────────
 let currentSlide = 0;
-const TOTAL_SLIDES = 9;
+const TOTAL_SLIDES = 8;
 function updateNavBtns() {}
 function navBack() {}
 function navNext() {}
@@ -1411,78 +1337,66 @@ function renderScenario(key) {
   const yieldEl = document.getElementById(key + '_yield');
   yieldEl.textContent = aum > 0 ? (rev / aum * 100).toFixed(2) + '%' : '—';
 
-  // Per-year data
-  const labels = [], advisor = [], dept = [], firm = [], deptExp = [];
-  let tAdvisor = 0, tDept = 0, tFirm = 0, tExp = 0;
+  const purchaseYr = price / SCN_SPLIT_YEAR;   // annualized over the 6-yr buyout
+
+  // Per-year rows, cumulative firm net, and the break-even year
+  const rows = [];
+  let cum = 0, breakevenYear = 0;
+  let tAdvisor = 0, tDept = 0, tFirm = 0, tExp = 0, tPurchase = 0;
   for (let y = 1; y <= SCN_YEARS; y++) {
     const [sa, sd, sf] = scnSplits(y);
-    const a = rev * sa, d = rev * sd, fm = rev * sf;
-    labels.push('Yr ' + y);
-    advisor.push(a); dept.push(d); firm.push(fm); deptExp.push(exp);
-    tAdvisor += a; tDept += d; tFirm += fm; tExp += exp;
+    const advisor = rev * sa, dept = rev * sd, firmGross = rev * sf;
+    const purchase = y <= SCN_SPLIT_YEAR ? purchaseYr : 0;
+    const firmNet = firmGross - exp - purchase;
+    cum += firmNet;
+    if (breakevenYear === 0 && cum >= 0) breakevenYear = y;
+    rows.push({ y, advisor, dept, firmGross, exp, purchase, firmNet, cum });
+    tAdvisor += advisor; tDept += dept; tFirm += firmGross; tExp += exp; tPurchase += purchase;
   }
+  const firmNetTot = tFirm - tExp - tPurchase;
 
-  // Chart — stacked revenue bars + dept expenses overlay line (distinct color)
-  if (scnCharts[key]) scnCharts[key].destroy();
-  scnCharts[key] = new Chart(document.getElementById(key + '_chart'), {
-    type: 'bar',
-    data: { labels, datasets: [
-      { label: 'Original Advisor', data: advisor, backgroundColor: '#6b7a8d', stack: 's' },
-      { label: 'NWAM Advisors (Dept)', data: dept, backgroundColor: '#1a7a4a', stack: 's' },
-      { label: 'NWAM Firm', data: firm, backgroundColor: '#1882ed', stack: 's' },
-      { type: 'line', label: 'Dept expenses / salaries', data: deptExp, borderColor: '#c0392b', backgroundColor: '#c0392b', borderWidth: 2, borderDash: [6, 4], pointRadius: 2, pointBackgroundColor: '#c0392b', fill: false, order: 0 }
-    ]},
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom', labels: { color: '#5a6a7a', font: { size: 11 }, boxWidth: 12, padding: 14 } },
-        tooltip: { callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + fmt(ctx.raw) } }
-      },
-      scales: {
-        x: { stacked: true, ticks: { color: '#5a6a7a', font: { size: 11 } }, grid: { display: false } },
-        y: { stacked: true, ticks: { callback: v => fmt(v), color: '#5a6a7a', font: { size: 11 } }, grid: { color: 'rgba(90,106,122,0.1)' } }
-      }
-    }
-  });
-
-  // Summary cards (10-year cumulative per party)
+  // Summary cards
   document.getElementById(key + '_cards').innerHTML =
     scnCard('Original Advisor', tAdvisor, 'Yrs 1–6 at 50% · then bought out') +
     scnCard('NWAM Advisors (Dept)', tDept, 'Flat 25% across all ' + SCN_YEARS + ' yrs') +
-    scnCard('NWAM Firm', tFirm, '25% yrs 1–6 → 75% yr 7+');
+    scnCard('Firm net · ' + SCN_YEARS + ' yrs', firmNetTot, breakevenYear ? ('Cumulative break-even in Year ' + breakevenYear) : ('No break-even by Year ' + SCN_YEARS));
 
-  // Numbers breakdown table
-  const p1 = SCN_SPLIT_YEAR, p2 = SCN_YEARS - SCN_SPLIT_YEAR;  // 6 and 4
-  const purchaseYr = price / SCN_SPLIT_YEAR;   // annualized over the 6-yr buyout
-  const firmNet1 = rev * 0.25 - exp - purchaseYr;
-  const firmNet2 = rev * 0.75 - exp;
-  const firmNetTot = tFirm - tExp - price;
+  // Cell helpers
   const money = (v, neg) => {
     const showNeg = neg && Math.abs(v) > 0.5;
     const col = showNeg ? 'var(--red)' : (v < 0 ? 'var(--red)' : 'var(--ink)');
-    return '<td style="color:' + col + ';">' + (showNeg ? '−' : '') + fmt(Math.abs(v)) + '</td>';
+    return '<td style="color:' + col + ';white-space:nowrap;">' + (showNeg ? '−' : '') + fmt(Math.abs(v)) + '</td>';
   };
-  const netCol = v => v >= 0 ? 'var(--green)' : 'var(--red)';
+  const netCell = v => '<td style="font-weight:600;white-space:nowrap;color:' + (v >= 0 ? 'var(--green)' : 'var(--red)') + ';">' + fmt(v) + '</td>';
+
+  // Per-year table body
+  let body = '';
+  rows.forEach(r => {
+    const be = r.y === breakevenYear;
+    const rowStyle = be ? ' style="background:var(--green-light);"' : '';
+    const yearCell = '<td style="font-weight:600;color:var(--ink);white-space:nowrap;">Year ' + r.y +
+      (be ? ' <span class="badge badge-g">Break-even</span>' : '') + '</td>';
+    body += '<tr' + rowStyle + '>' + yearCell + money(rev) + money(r.advisor) + money(r.dept) +
+      money(r.firmGross) + money(r.exp, true) + money(r.purchase, true) + netCell(r.firmNet) + netCell(r.cum) + '</tr>';
+  });
+  body += '<tr style="font-weight:700;background:var(--blue-xlight);">' +
+    '<td style="color:var(--blue);white-space:nowrap;">' + SCN_YEARS + '-yr total</td>' +
+    money(rev * SCN_YEARS) + money(tAdvisor) + money(tDept) + money(tFirm) +
+    money(tExp, true) + money(tPurchase, true) + netCell(firmNetTot) + '<td></td>' +
+  '</tr>';
+
   document.getElementById(key + '_breakdown').innerHTML =
     '<thead style="background:#1882ed;"><tr>' +
-      '<th style="color:#fff;border-bottom:none;">Line item</th>' +
-      '<th style="color:#fff;border-bottom:none;">Yrs 1–6 /yr</th>' +
-      '<th style="color:#fff;border-bottom:none;">Yr 7+ /yr</th>' +
-      '<th style="color:#fff;border-bottom:none;">10-yr total</th>' +
-    '</tr></thead><tbody>' +
-      '<tr><td style="color:var(--ink-soft);">Gross revenue</td>' + money(rev) + money(rev) + money(rev * SCN_YEARS) + '</tr>' +
-      '<tr><td style="color:var(--ink-soft);">Original Advisor (50% → 0)</td>' + money(rev * 0.5) + money(0) + money(rev * 0.5 * p1) + '</tr>' +
-      '<tr><td style="color:var(--ink-soft);">NWAM Advisors — Dept (25%)</td>' + money(rev * 0.25) + money(rev * 0.25) + money(tDept) + '</tr>' +
-      '<tr><td style="color:var(--ink-soft);">NWAM Firm — gross (25% → 75%)</td>' + money(rev * 0.25) + money(rev * 0.75) + money(tFirm) + '</tr>' +
-      '<tr><td style="color:var(--ink-soft);">Dept expenses / salaries</td>' + money(exp, true) + money(exp, true) + money(tExp, true) + '</tr>' +
-      '<tr><td style="color:var(--ink-soft);">Practice purchase</td>' + money(purchaseYr, true) + money(0, true) + money(price, true) + '</tr>' +
-      '<tr style="font-weight:600;background:var(--blue-xlight);">' +
-        '<td style="color:var(--blue);">Firm net (share − dept exp − purchase)</td>' +
-        '<td style="color:' + netCol(firmNet1) + ';">' + fmt(firmNet1) + '</td>' +
-        '<td style="color:' + netCol(firmNet2) + ';">' + fmt(firmNet2) + '</td>' +
-        '<td style="color:' + netCol(firmNetTot) + ';">' + fmt(firmNetTot) + '</td>' +
-      '</tr>' +
-    '</tbody>';
+      '<th style="color:#fff;border-bottom:none;">Year</th>' +
+      '<th style="color:#fff;border-bottom:none;">Gross</th>' +
+      '<th style="color:#fff;border-bottom:none;">Orig. Advisor</th>' +
+      '<th style="color:#fff;border-bottom:none;">NWAM Advisors</th>' +
+      '<th style="color:#fff;border-bottom:none;">Firm gross</th>' +
+      '<th style="color:#fff;border-bottom:none;">Dept exp</th>' +
+      '<th style="color:#fff;border-bottom:none;">Purchase</th>' +
+      '<th style="color:#fff;border-bottom:none;">Firm net</th>' +
+      '<th style="color:#fff;border-bottom:none;">Cumulative</th>' +
+    '</tr></thead><tbody>' + body + '</tbody>';
 }
 function scnCard(title, total, sub) {
   return '<div style="background:var(--white);border:1px solid var(--border-soft);border-top:3px solid var(--blue);border-radius:6px;padding:1.25rem;">' +
@@ -1491,7 +1405,6 @@ function scnCard(title, total, sub) {
     '<div style="font-size:12px;color:var(--ink-soft);">' + sub + ' · ' + SCN_YEARS + '-yr total</div>' +
     '</div>';
 }
-renderScenario('full');
 renderScenario('staged');
 </script>
 </body>
