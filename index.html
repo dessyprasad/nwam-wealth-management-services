@@ -790,27 +790,23 @@ tr:hover td{background:var(--bg);}
     <div class="scn-inputs">
       <div class="scn-field">
         <label>Practice AUM</label>
-        <div class="scn-input-wrap"><span class="prefix">$</span><input type="number" id="staged_aum" value="50000000" min="0" step="1000000" oninput="renderScenario('staged')"/></div>
+        <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="staged_aum" value="50,000,000" oninput="fmtInput(this,'staged')"/></div>
         <div class="scn-hint">Total assets under management</div>
       </div>
       <div class="scn-field">
         <label>Annual Revenue</label>
-        <div class="scn-input-wrap"><span class="prefix">$</span><input type="number" id="staged_rev" value="500000" min="0" step="10000" oninput="renderScenario('staged')"/></div>
+        <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="staged_rev" value="500,000" oninput="fmtInput(this,'staged')"/></div>
         <div class="scn-hint">Gross annual revenue of the book</div>
       </div>
       <div class="scn-field">
         <label>Dept Expenses / Salaries</label>
-        <div class="scn-input-wrap"><span class="prefix">$</span><input type="number" id="staged_exp" value="95000" min="0" step="5000" oninput="renderScenario('staged')"/></div>
+        <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="staged_exp" value="95,000" oninput="fmtInput(this,'staged')"/></div>
         <div class="scn-hint">Annual · e.g. associate $80K + dept head $15K</div>
       </div>
       <div class="scn-field">
         <label>Practice Purchase Price</label>
-        <div class="scn-input-wrap"><span class="prefix">$</span><input type="number" id="staged_price" value="1000000" min="0" step="50000" oninput="renderScenario('staged')"/></div>
+        <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="staged_price" value="1,000,000" oninput="fmtInput(this,'staged')"/></div>
         <div class="scn-hint">Total paid to acquire the practice · annualized over the 6-yr buyout</div>
-      </div>
-      <div class="scn-derived">
-        <div class="dl">Revenue yield on AUM</div>
-        <div class="dv" id="staged_yield">—</div>
       </div>
     </div>
 
@@ -823,6 +819,11 @@ tr:hover td{background:var(--bg);}
 
     <!-- SUMMARY CARDS -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem;" id="staged_cards"></div>
+
+    <div class="scn-derived" style="max-width:280px;margin-bottom:1.25rem;">
+      <div class="dl">Revenue yield on AUM</div>
+      <div class="dv" id="staged_yield">—</div>
+    </div>
 
     <div style="display:flex;align-items:flex-start;gap:10px;background:var(--amber-light);border:1px solid rgba(245,158,11,0.35);border-radius:6px;padding:0.75rem 1rem;">
       <span style="font-size:15px;line-height:1;margin-top:1px;flex-shrink:0;">⚠️</span>
@@ -1333,11 +1334,23 @@ function scnSplits(year) {
   if (year <= SCN_SPLIT_YEAR) return [0.50, 0.25, 0.25];
   return [0.00, 0.25, 0.75];
 }
+function fmtInput(el, key) {
+  const digitsBefore = el.value.slice(0, el.selectionStart || 0).replace(/[^0-9]/g, '').length;
+  const raw = el.value.replace(/[^0-9]/g, '');
+  const formatted = raw ? Number(raw).toLocaleString('en-US') : '';
+  el.value = formatted;
+  // restore caret after the same count of digits
+  let pos = 0, seen = 0;
+  while (pos < formatted.length && seen < digitsBefore) { if (formatted[pos] >= '0' && formatted[pos] <= '9') seen++; pos++; }
+  try { el.setSelectionRange(pos, pos); } catch (e) {}
+  renderScenario(key);
+}
 function renderScenario(key) {
-  const aum = parseFloat(document.getElementById(key + '_aum').value) || 0;
-  const rev = parseFloat(document.getElementById(key + '_rev').value) || 0;
-  const exp = parseFloat(document.getElementById(key + '_exp').value) || 0;
-  const price = parseFloat(document.getElementById(key + '_price').value) || 0;
+  const numVal = id => parseFloat((document.getElementById(id).value || '').replace(/[^0-9.]/g, '')) || 0;
+  const aum = numVal(key + '_aum');
+  const rev = numVal(key + '_rev');
+  const exp = numVal(key + '_exp');
+  const price = numVal(key + '_price');
 
   // Derived yield
   const yieldEl = document.getElementById(key + '_yield');
