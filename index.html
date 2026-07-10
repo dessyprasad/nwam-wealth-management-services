@@ -803,7 +803,7 @@ tr:hover td{background:var(--bg);}
     </div>
 
     <div class="insight" style="margin-bottom:1.25rem;">
-      <strong>Structure:</strong> Over the <strong>6-year payout</strong>, revenue splits <strong>50 / 25 / 25</strong> (retiring advisor / NWAM advisor servicing the book / firm). The advisor's <strong>50%</strong> is the purchase price. From <strong>Year 7 on</strong> the advisor is fully paid out and NWAM keeps <strong>100%</strong>, split <strong>75%</strong> firm / <strong>25%</strong> servicing advisor.
+      <strong>Structure:</strong> Over the <strong>5-year payout</strong>, revenue splits <strong>50 / 25 / 25</strong> (retiring advisor / NWAM advisor servicing the book / firm). The advisor's <strong>50%</strong> is the purchase price. From <strong>Year 6 on</strong> the advisor is fully paid out and NWAM keeps <strong>100%</strong>, split <strong>75%</strong> firm / <strong>25%</strong> servicing advisor.
     </div>
 
     <!-- INPUTS -->
@@ -839,8 +839,8 @@ tr:hover td{background:var(--bg);}
     <div class="model-panel" style="margin-bottom:1.5rem;">
       <div class="panel-title">Key terms</div>
       <ul style="margin:0.5rem 0 0;padding-left:1.25rem;display:flex;flex-direction:column;gap:0.5rem;font-size:13.5px;color:var(--ink);line-height:1.6;">
-        <li><strong>Purchase price:</strong> the retiring advisor's 50% of revenue over the 6-year payout is the purchase price (≈ 300% of annual revenue) — no separate up-front payment; it is funded from the book's own revenue.</li>
-        <li><strong>After payout:</strong> from Year 7 the advisor is fully paid out and NWAM keeps 100% of the revenue.</li>
+        <li><strong>Purchase price:</strong> the retiring advisor's 50% of revenue over the 5-year payout is the purchase price (≈ 250% of annual revenue) — no separate up-front payment; it is funded from the book's own revenue.</li>
+        <li><strong>After payout:</strong> from Year 6 the advisor is fully paid out and NWAM keeps 100% of the revenue.</li>
         <li><strong>Internal split:</strong> NWAM's share splits 75% firm / 25% the NWAM advisor servicing the book — governed by the separate agreement with that advisor (not modeled here).</li>
         <li><strong>Transition:</strong> the retiring advisor introduces clients and assists the handover before exiting.</li>
         <li><strong>Non-solicitation:</strong> 5 years from closing.</li>
@@ -968,10 +968,10 @@ tr:hover td{background:var(--bg);}
     </div>
 
     <div class="insight">
-      <strong>Why the two nets differ — two causes:</strong>
+      <strong>Why the two nets differ:</strong>
       <ul style="margin:0.6rem 0 0;padding-left:1.25rem;display:flex;flex-direction:column;gap:0.5rem;font-size:inherit;">
-        <li><strong>Payout length.</strong> The Poloko deal pays the retiring advisor for 5 years vs the Practice Buyout Model's 6, so NWAM captures 100% of the revenue one year sooner.</li>
-        <li><strong>How the internal split is treated.</strong> The Practice Buyout Model nets out the 25% that goes to the servicing NWAM advisor, so its "NWAM net" is really the firm's net. The Poloko tab leaves that internal 75/25 split off-tab (it lives in the separate NWAM-advisor agreement), so its "NWAM net" is before that split — which is why it reads higher. This is a definitional difference, not a pure economics gap.</li>
+        <li>Both tabs now use the same 5-year payout and the same gross economics — the retiring advisor gets 50% for 5 years, then NWAM keeps 100%.</li>
+        <li><strong>The only difference is how the internal split is treated.</strong> The Practice Buyout Model nets out the 25% that goes to the servicing NWAM advisor, so its "NWAM net" is really the firm's net. The Poloko tab leaves that internal 75/25 split off-tab (it lives in the separate NWAM-advisor agreement), so its "NWAM net" is before that split — which is why it reads higher. This is a definitional difference, not an economics gap.</li>
       </ul>
     </div>
 
@@ -1476,7 +1476,7 @@ function submitPipelineEntry() {
 
 // ─── ACQUISITION SCENARIOS (Full Buyout / Staged Buy) ─────────────────────────
 const SCN_YEARS = 10;      // years to project
-const SCN_SPLIT_YEAR = 6;  // advisor bought out after this year
+const SCN_SPLIT_YEAR = 5;  // advisor bought out after this year
 const scnCharts = {};
 function scnSplits(year) {
   // returns [advisorShare, deptShare, firmShare] for a given year (1-indexed)
@@ -1503,7 +1503,7 @@ function renderFA2() {
   const expTot = exp * YEARS;
 
   // Practice Buyout Model: advisor 50% yrs 1-6 then 0; NWAM gross 50%->100%; net also nets out the 25% servicing-advisor cut
-  const grossB = rev * 0.5 * 6 + rev * 1.0 * 4;
+  const grossB = rev * 0.5 * 5 + rev * 1.0 * 5;
   const deptB = rev * 0.25 * YEARS;           // 25% servicing-advisor carve-out (modeled in the buyout tab)
   const netB = grossB - deptB - expTot;
   // Poloko Example: advisor 50% yrs 1-5 then 0; NWAM gross 50%->100%; net = gross minus salaries (internal split not modeled)
@@ -1525,14 +1525,13 @@ function renderFA2() {
       '<th style="color:#fff;border-bottom:none;">Practice Buyout Model</th>' +
       '<th style="color:#fff;border-bottom:none;">Poloko Example</th>' +
     '</tr></thead><tbody>' +
-      '<tr>' + plain('Payout term') + plain('6 years') + plain('5 years') + '</tr>' +
+      '<tr>' + plain('Payout term') + plain('5 years') + plain('5 years') + '</tr>' +
       '<tr>' + plain('NWAM gross revenue') + cell(grossB) + cell(grossP) + '</tr>' +
       '<tr>' + plain('Servicing-advisor 25% (netted)') + cell(deptB, {neg:true}) + plain('not modeled') + '</tr>' +
       '<tr>' + plain('Dept expenses / salaries') + cell(expTot, {neg:true}) + cell(expTot, {neg:true}) + '</tr>' +
       '<tr style="font-weight:600;background:var(--blue-xlight);"><td style="color:var(--blue);">NWAM net</td>' + cell(netB, {net:true}) + cell(netP, {net:true}) + '</tr>' +
     '</tbody>';
 
-  const termDiff = grossP - grossB;   // Poloko reaches 100% one year sooner
   const bridgeAdd = (label, val) => '<tr>' + plain(label) + '<td style="white-space:nowrap;color:var(--green);">+' + fmtC(val) + '</td></tr>';
   document.getElementById('fa2_bridge').innerHTML =
     '<thead style="background:#1882ed;"><tr>' +
@@ -1540,7 +1539,6 @@ function renderFA2() {
       '<th style="color:#fff;border-bottom:none;">10-yr NWAM net</th>' +
     '</tr></thead><tbody>' +
       '<tr style="font-weight:600;"><td>Practice Buyout Model net</td><td style="font-weight:600;color:' + (netB >= 0 ? 'var(--green)' : 'var(--red)') + ';white-space:nowrap;">' + fmtC(netB) + '</td></tr>' +
-      bridgeAdd('+ Reaches 100% a year sooner (5-yr vs 6-yr payout)', termDiff) +
       bridgeAdd('+ Servicing-advisor 25% not netted out (internal split off-tab)', deptB) +
       '<tr style="font-weight:700;background:var(--blue-xlight);"><td style="color:var(--blue);">Poloko Example net</td><td style="font-weight:700;color:' + (netP >= 0 ? 'var(--green)' : 'var(--red)') + ';white-space:nowrap;">' + fmtC(netP) + '</td></tr>' +
     '</tbody>';
@@ -1636,7 +1634,7 @@ function renderScenario(key) {
 
   // Summary cards
   document.getElementById(key + '_cards').innerHTML =
-    scnCard('Original Advisor', tAdvisor, 'Yrs 1–6 at 50% · then bought out') +
+    scnCard('Original Advisor', tAdvisor, 'Yrs 1–5 at 50% · then bought out') +
     scnCard('NWAM Advisors (Dept)', tDept, 'Flat 25% across all ' + SCN_YEARS + ' yrs') +
     scnCard('Firm net · ' + SCN_YEARS + ' yrs', firmNetTot, 'after dept share & salaries');
 
