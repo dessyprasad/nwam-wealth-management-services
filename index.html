@@ -243,12 +243,12 @@ tr:hover td{background:var(--bg);}
 #slide-fa2 table{font-size:12.5px;}
 #slide-fa2 th{padding:7px 9px;white-space:nowrap;}
 #slide-fa2 td{padding:7px 9px;}
-#slide-fa2 .scn-inputs{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;}
+#slide-fa2 .scn-inputs{display:flex;flex-wrap:wrap;align-items:flex-start;gap:1rem;}
 #slide-fa2 .scn-field{width:165px;flex:0 0 auto;}
 #slide-fa2 .scn-input-wrap input{font-size:15px;padding:0.5rem 0.4rem;}
 #slide-fa2 .fa2-analyze{margin-left:auto;align-self:center;padding:0.65rem 1.75rem;border:none;border-radius:6px;background:var(--blue);color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;letter-spacing:0.02em;cursor:pointer;transition:background 0.15s;}
 #slide-fa2 .fa2-analyze:hover{background:var(--blue-dark);}
-#slide-staged .scn-inputs,#slide-poloko .scn-inputs{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;}
+#slide-staged .scn-inputs,#slide-poloko .scn-inputs{display:flex;flex-wrap:wrap;align-items:flex-start;gap:1rem;}
 #slide-staged .scn-field,#slide-poloko .scn-field{width:165px;flex:0 0 auto;}
 #slide-staged .scn-input-wrap input,#slide-poloko .scn-input-wrap input{font-size:15px;padding:0.5rem 0.4rem;}
 .analyze-btn{margin-left:auto;align-self:center;padding:0.65rem 1.75rem;border:none;border-radius:6px;background:var(--blue);color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;letter-spacing:0.02em;cursor:pointer;transition:background 0.15s;}
@@ -800,7 +800,6 @@ tr:hover td{background:var(--bg);}
     <div class="slide-header" style="margin-bottom:1.25rem;">
       <div class="slide-num">Section 06</div>
       <div class="slide-title">Practice Buyout Model</div>
-      <p class="slide-intro">NWAM buys the practice through a 6-year earnout. The retiring advisor's 50% of revenue is the purchase price — there is no separate up-front payment. Enter the practice AUM and annual revenue to model the split across the buyout window.</p>
     </div>
 
     <div class="insight" style="margin-bottom:1.25rem;">
@@ -837,14 +836,17 @@ tr:hover td{background:var(--bg);}
     <!-- SUMMARY CARDS -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem;" id="staged_cards"></div>
 
-    <div class="scn-derived" style="max-width:280px;margin-bottom:1.25rem;">
-      <div class="dl">Revenue yield on AUM</div>
-      <div class="dv" id="staged_yield">—</div>
-    </div>
-
-    <div style="display:flex;align-items:flex-start;gap:10px;background:var(--amber-light);border:1px solid rgba(245,158,11,0.35);border-radius:6px;padding:0.75rem 1rem;">
-      <span style="font-size:15px;line-height:1;margin-top:1px;flex-shrink:0;">⚠️</span>
-      <div style="font-size:13px;color:var(--ink);line-height:1.6;"><strong>Note:</strong> the advisor's 50% (years 1–6) is the purchase price — there is no separate up-front payment. The internal 75% firm / 25% servicing-advisor split of NWAM's share is governed by the separate agreement with the NWAM advisor.</div>
+    <div class="model-panel" style="margin-bottom:1.5rem;">
+      <div class="panel-title">Key terms</div>
+      <ul style="margin:0.5rem 0 0;padding-left:1.25rem;display:flex;flex-direction:column;gap:0.5rem;font-size:13.5px;color:var(--ink);line-height:1.6;">
+        <li><strong>Purchase price:</strong> the retiring advisor's 50% of revenue over the 6-year payout is the purchase price (≈ 300% of annual revenue) — no separate up-front payment; it is funded from the book's own revenue.</li>
+        <li><strong>After payout:</strong> from Year 7 the advisor is fully paid out and NWAM keeps 100% of the revenue.</li>
+        <li><strong>Internal split:</strong> NWAM's share splits 75% firm / 25% the NWAM advisor servicing the book — governed by the separate agreement with that advisor (not modeled here).</li>
+        <li><strong>Transition:</strong> the retiring advisor introduces clients and assists the handover before exiting.</li>
+        <li><strong>Non-solicitation:</strong> 5 years from closing.</li>
+        <li><strong>Death / disability:</strong> payments continue to the estate or designee on the same schedule.</li>
+        <li><strong>Assets:</strong> client accounts + goodwill only; NWAM assumes no liabilities.</li>
+      </ul>
     </div>
 
   </div>
@@ -856,7 +858,10 @@ tr:hover td{background:var(--bg);}
     <div class="slide-header" style="margin-bottom:1.25rem;">
       <div class="slide-num">Section 07</div>
       <div class="slide-title">Poloko Example</div>
-      <p class="slide-intro">The real buyout NWAM completed — the purchase of Ann Poloko LLC's client book — laid out the way future buyouts are structured. NWAM pays the retiring advisor 50% of the book's revenue for 5 years (that stream <em>is</em> the purchase price), keeps the other 50% to cover servicing, then keeps 100% once the payout ends.</p>
+    </div>
+
+    <div class="insight" style="margin-bottom:1.5rem;">
+      <strong>Structure:</strong> For the <strong>5-year payout (20 quarters)</strong>, <strong>50%</strong> of Gross Revenue goes to the retiring advisor as the purchase price and <strong>50%</strong> stays with NWAM. From <strong>Year 6 on</strong> the advisor is fully paid out and NWAM keeps <strong>100%</strong>. Gross is net of custodian wrap &amp; transaction fees; the payout trues up to actual revenue each quarter.
     </div>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;">
@@ -880,15 +885,6 @@ tr:hover td{background:var(--bg);}
         <div style="font-family:'DM Serif Display',serif;font-size:19px;color:var(--blue);line-height:1.15;margin-bottom:4px;">20 quarters</div>
         <div style="font-size:12px;color:var(--ink-soft);">5 years of quarterly installments</div>
       </div>
-      <div style="background:var(--white);border:1px solid var(--border-soft);border-radius:6px;padding:1rem 1.25rem;">
-        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:6px;">Transition period</div>
-        <div style="font-family:'DM Serif Display',serif;font-size:19px;color:var(--blue);line-height:1.15;margin-bottom:4px;">1 year</div>
-        <div style="font-size:12px;color:var(--ink-soft);">Closing → Retirement Date</div>
-      </div>
-    </div>
-
-    <div class="insight" style="margin-bottom:1.5rem;">
-      <strong>Structure:</strong> For the <strong>5-year payout (20 quarters)</strong>, <strong>50%</strong> of Adjusted Gross Revenue goes to the retiring advisor as the purchase price and <strong>50%</strong> stays with NWAM. From <strong>Year 6 on</strong> the advisor is fully paid out and NWAM keeps <strong>100%</strong>. AGR is net of custodian wrap &amp; transaction fees; the payout trues up to actual revenue each quarter.
     </div>
 
     <!-- INPUTS -->
@@ -899,7 +895,7 @@ tr:hover td{background:var(--bg);}
         <div class="scn-hint">Total assets under management</div>
       </div>
       <div class="scn-field">
-        <label>Annual Revenue (AGR)</label>
+        <label>Annual Revenue (Gross)</label>
         <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="poloko_rev" value="500,000" oninput="fmtInput(this,'poloko')"/></div>
         <div class="scn-hint">Net of custodian wrap &amp; transaction fees</div>
       </div>
@@ -921,25 +917,15 @@ tr:hover td{background:var(--bg);}
     <!-- SUMMARY CARDS -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem;" id="poloko_cards"></div>
 
-    <div class="scn-derived" style="max-width:280px;margin-bottom:1.5rem;">
-      <div class="dl">Revenue yield on AUM</div>
-      <div class="dv" id="poloko_yield">—</div>
-    </div>
-
     <div class="model-panel" style="margin-bottom:1.5rem;">
       <div class="panel-title">Key terms</div>
       <ul style="margin:0.5rem 0 0;padding-left:1.25rem;display:flex;flex-direction:column;gap:0.5rem;font-size:13.5px;color:var(--ink);line-height:1.6;">
-        <li><strong>Purchase price:</strong> 50% of AGR over 20 quarters (≈ 250% of annual revenue); estimated at 10× quarterly AGR at closing. Paid in 20 quarterly installments directly to the Member.</li>
+        <li><strong>Purchase price:</strong> 50% of Gross over 20 quarters (≈ 250% of annual revenue); estimated at 10× quarterly Gross at closing. Paid in 20 quarterly installments directly to the Member.</li>
         <li><strong>Transition:</strong> 1-year Transition Services Agreement; Retirement Date is the first anniversary of closing; the Member notifies clients and assists the handover.</li>
         <li><strong>Non-solicitation:</strong> 5 years from closing.</li>
         <li><strong>Death / disability:</strong> if within 12 months of closing, payments continue to the estate or designee on the same schedule.</li>
         <li><strong>Assets:</strong> client accounts + goodwill only; NWAM assumes no liabilities. Price allocation (IRC §1060 / Form 8594): $25,000 to the non-solicitation covenant, remainder to intangibles &amp; goodwill.</li>
       </ul>
-    </div>
-
-    <div style="display:flex;align-items:flex-start;gap:10px;background:var(--blue-xlight);border:1px solid var(--border);border-radius:6px;padding:0.85rem 1rem;">
-      <span style="font-size:15px;line-height:1;margin-top:1px;flex-shrink:0;">📝</span>
-      <div style="font-size:13px;color:var(--ink);line-height:1.6;"><strong>Original vs. amended:</strong> same economics, restructured language — the amendment expresses the price as 50% of AGR over 20 quarters (estimated 10× AGR) paid directly to the Member in quarterly installments, formalizes the 1-year transition via a Transition Services Agreement, and clarifies the non-solicitation term to five (5) years.</div>
     </div>
 
   </div>
@@ -966,11 +952,6 @@ tr:hover td{background:var(--bg);}
         <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="fa2_exp" value="95,000" oninput="fmtInput(this,'fa2')"/></div>
         <div class="scn-hint">Annual servicing cost · both models</div>
       </div>
-      <div class="scn-field">
-        <label>Buyout Purchase Price</label>
-        <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="fa2_price" value="1,000,000" oninput="fmtInput(this,'fa2')"/></div>
-        <div class="scn-hint">Separate lump — Practice Buyout Model only</div>
-      </div>
       <button class="fa2-analyze" onclick="renderFA2()">Analyze</button>
     </div>
 
@@ -987,10 +968,10 @@ tr:hover td{background:var(--bg);}
     </div>
 
     <div class="insight">
-      <strong>Why the Poloko structure is more profitable — two causes:</strong>
+      <strong>Why the two nets differ — two causes:</strong>
       <ul style="margin:0.6rem 0 0;padding-left:1.25rem;display:flex;flex-direction:column;gap:0.5rem;font-size:inherit;">
-        <li><strong>NWAM keeps a bigger revenue share.</strong> In the Practice Buyout Model a standing 25% is carved out to the servicing advisors (dept) forever, so NWAM sees only 25% during the buyout and 75% after. In the Poloko deal NWAM retains 50% during the payout and 100% once it ends — servicing is just a flat salary cost, not a perpetual revenue share.</li>
-        <li><strong>No separate purchase price.</strong> The Practice Buyout Model pays a lump-sum purchase price <em>on top of</em> the advisor's revenue stream. In the Poloko deal the 50% stream <em>is</em> the purchase price — there is no additional outlay, so the acquisition self-funds from the book's own revenue.</li>
+        <li><strong>Payout length.</strong> The Poloko deal pays the retiring advisor for 5 years vs the Practice Buyout Model's 6, so NWAM captures 100% of the revenue one year sooner.</li>
+        <li><strong>How the internal split is treated.</strong> The Practice Buyout Model nets out the 25% that goes to the servicing NWAM advisor, so its "NWAM net" is really the firm's net. The Poloko tab leaves that internal 75/25 split off-tab (it lives in the separate NWAM-advisor agreement), so its "NWAM net" is before that split — which is why it reads higher. This is a definitional difference, not a pure economics gap.</li>
       </ul>
     </div>
 
@@ -1518,17 +1499,16 @@ function renderFA2() {
   const numVal = id => parseFloat((document.getElementById(id).value || '').replace(/[^0-9.]/g, '')) || 0;
   const rev = numVal('fa2_rev');
   const exp = numVal('fa2_exp');
-  const price = numVal('fa2_price');
   const YEARS = 10;
-
-  // Practice Buyout Model: 50/25/25 yrs 1-6 -> 75/25 yr 7+; separate purchase amortized over 6 yrs
-  const grossB = rev * 0.25 * 6 + rev * 0.75 * 4;
   const expTot = exp * YEARS;
-  const netB = grossB - expTot - price;
-  // Poloko: 50% to seller yrs 1-5 (that IS the purchase) -> NWAM 50% yrs 1-5, 100% yr 6+
+
+  // Practice Buyout Model: advisor 50% yrs 1-6 then 0; NWAM gross 50%->100%; net also nets out the 25% servicing-advisor cut
+  const grossB = rev * 0.5 * 6 + rev * 1.0 * 4;
+  const deptB = rev * 0.25 * YEARS;           // 25% servicing-advisor carve-out (modeled in the buyout tab)
+  const netB = grossB - deptB - expTot;
+  // Poloko Example: advisor 50% yrs 1-5 then 0; NWAM gross 50%->100%; net = gross minus salaries (internal split not modeled)
   const grossP = rev * 0.5 * 5 + rev * 1.0 * 5;
   const netP = grossP - expTot;
-
 
   const fmtC = n => {
     const a = Math.abs(n), sg = n < 0 ? '-' : '';
@@ -1539,35 +1519,32 @@ function renderFA2() {
   const cell = (v, opt) => { opt = opt || {}; const col = opt.neg ? 'var(--red)' : (opt.net ? (v >= 0 ? 'var(--green)' : 'var(--red)') : 'var(--ink)'); const w = (opt.net ? 'font-weight:600;' : ''); return '<td style="' + w + 'color:' + col + ';white-space:nowrap;">' + (opt.neg && Math.abs(v) > 0.5 ? '−' : '') + fmtC(Math.abs(v)) + '</td>'; };
   const plain = t => '<td style="color:var(--ink-soft);">' + t + '</td>';
 
-  // Comparison table
   document.getElementById('fa2_compare').innerHTML =
     '<thead style="background:#1882ed;"><tr>' +
       '<th style="color:#fff;border-bottom:none;">Metric (10-yr)</th>' +
       '<th style="color:#fff;border-bottom:none;">Practice Buyout Model</th>' +
       '<th style="color:#fff;border-bottom:none;">Poloko Example</th>' +
     '</tr></thead><tbody>' +
-      '<tr>' + plain('NWAM / firm gross revenue') + cell(grossB) + cell(grossP) + '</tr>' +
+      '<tr>' + plain('Payout term') + plain('6 years') + plain('5 years') + '</tr>' +
+      '<tr>' + plain('NWAM gross revenue') + cell(grossB) + cell(grossP) + '</tr>' +
+      '<tr>' + plain('Servicing-advisor 25% (netted)') + cell(deptB, {neg:true}) + plain('not modeled') + '</tr>' +
       '<tr>' + plain('Dept expenses / salaries') + cell(expTot, {neg:true}) + cell(expTot, {neg:true}) + '</tr>' +
-      '<tr>' + plain('Separate purchase price') + cell(price, {neg:true}) + plain('—') + '</tr>' +
-      '<tr style="font-weight:600;background:var(--blue-xlight);"><td style="color:var(--blue);">Firm net</td>' + cell(netB, {net:true}) + cell(netP, {net:true}) + '</tr>' +
+      '<tr style="font-weight:600;background:var(--blue-xlight);"><td style="color:var(--blue);">NWAM net</td>' + cell(netB, {net:true}) + cell(netP, {net:true}) + '</tr>' +
     '</tbody>';
 
-  // Bridge: buyout net -> poloko net
-  const shareDiff = grossP - grossB;   // higher NWAM revenue share
-  const purchaseDiff = price;          // no separate purchase in Poloko
-  const bridgeRow = (label, val, opt) => '<tr>' + plain(label) + (opt === 'net' ? '<td style="font-weight:600;color:' + (val >= 0 ? 'var(--green)' : 'var(--red)') + ';white-space:nowrap;">' + fmtC(val) + '</td>' : '<td style="white-space:nowrap;color:var(--green);">+' + fmtC(val) + '</td>') + '</tr>';
+  const termDiff = grossP - grossB;   // Poloko reaches 100% one year sooner
+  const bridgeAdd = (label, val) => '<tr>' + plain(label) + '<td style="white-space:nowrap;color:var(--green);">+' + fmtC(val) + '</td></tr>';
   document.getElementById('fa2_bridge').innerHTML =
     '<thead style="background:#1882ed;"><tr>' +
       '<th style="color:#fff;border-bottom:none;">Step</th>' +
-      '<th style="color:#fff;border-bottom:none;">10-yr firm net</th>' +
+      '<th style="color:#fff;border-bottom:none;">10-yr NWAM net</th>' +
     '</tr></thead><tbody>' +
       '<tr style="font-weight:600;"><td>Practice Buyout Model net</td><td style="font-weight:600;color:' + (netB >= 0 ? 'var(--green)' : 'var(--red)') + ';white-space:nowrap;">' + fmtC(netB) + '</td></tr>' +
-      bridgeRow('+ NWAM keeps a bigger revenue share (50/100 vs 25/75)', shareDiff) +
-      bridgeRow('+ No separate purchase price (50% stream is the purchase)', purchaseDiff) +
+      bridgeAdd('+ Reaches 100% a year sooner (5-yr vs 6-yr payout)', termDiff) +
+      bridgeAdd('+ Servicing-advisor 25% not netted out (internal split off-tab)', deptB) +
       '<tr style="font-weight:700;background:var(--blue-xlight);"><td style="color:var(--blue);">Poloko Example net</td><td style="font-weight:700;color:' + (netP >= 0 ? 'var(--green)' : 'var(--red)') + ';white-space:nowrap;">' + fmtC(netP) + '</td></tr>' +
     '</tbody>';
 }
-
 // ─── POLOKO EXAMPLE (actual buyout: 50% to seller for 5 yrs = purchase, then 100% to NWAM) ──
 const POLOKO_PAYOUT_YEARS = 5;   // 20 quarters
 const POLOKO_HORIZON = 10;
@@ -1576,8 +1553,6 @@ function renderPoloko() {
   const aum = numVal('poloko_aum');
   const rev = numVal('poloko_rev');
   const exp = numVal('poloko_exp');
-
-  document.getElementById('poloko_yield').textContent = aum > 0 ? (rev / aum * 100).toFixed(2) + '%' : '—';
 
   const fmtC = n => {
     const a = Math.abs(n), sg = n < 0 ? '-' : '';
@@ -1608,9 +1583,9 @@ function renderPoloko() {
 
   // Summary cards
   document.getElementById('poloko_cards').innerHTML =
-    scnCard('Purchase price (to seller)', tSeller, '50% of AGR × 5 yrs · ≈ 250% of annual') +
-    scnCard('Firm net · yrs 1–5', rev * 0.5 - exp, 'per yr · 50% AGR − dept expenses') +
-    scnCard('Firm net · 10 yrs', firmNetTot, '50% AGR yrs 1–5 → 100% after · 10-yr total');
+    scnCard('Purchase price (to seller)', tSeller, '50% of Gross × 5 yrs · ≈ 250% of annual') +
+    scnCard('Firm net · yrs 1–5', rev * 0.5 - exp, 'per yr · 50% Gross − dept expenses') +
+    scnCard('Firm net · 10 yrs', firmNetTot, '50% Gross yrs 1–5 → 100% after · 10-yr total');
 
   let body = '';
   rows.forEach(r => {
@@ -1642,7 +1617,7 @@ function renderScenario(key) {
 
   // Derived yield
   const yieldEl = document.getElementById(key + '_yield');
-  yieldEl.textContent = aum > 0 ? (rev / aum * 100).toFixed(2) + '%' : '—';
+  if (yieldEl) yieldEl.textContent = aum > 0 ? (rev / aum * 100).toFixed(2) + '%' : '—';
 
 
   // Per-year rows, cumulative firm net, and the break-even year
