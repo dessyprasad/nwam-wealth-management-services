@@ -800,11 +800,11 @@ tr:hover td{background:var(--bg);}
     <div class="slide-header" style="margin-bottom:1.25rem;">
       <div class="slide-num">Section 06</div>
       <div class="slide-title">Practice Buyout Model</div>
-      <p class="slide-intro">NWAM buys the practice through a 6-year earnout: the retiring advisor receives 50% of the book's revenue for 6 years — that stream <em>is</em> the purchase price, so there is no separate up-front payment. NWAM keeps the other 50% during the payout and 100% from Year 7 on.</p>
+      <p class="slide-intro">NWAM buys the practice through a 6-year earnout. The retiring advisor's 50% of revenue is the purchase price — there is no separate up-front payment. Enter the practice AUM and annual revenue to model the split across the buyout window.</p>
     </div>
 
     <div class="insight" style="margin-bottom:1.25rem;">
-      <strong>Structure:</strong> For the <strong>6-year payout</strong>, <strong>50%</strong> of the book's revenue goes to the retiring advisor as the purchase price (≈ 300% of one year's revenue) and <strong>50%</strong> stays with NWAM. From <strong>Year 7 on</strong> the advisor is fully paid out and NWAM keeps <strong>100%</strong>. The internal split of NWAM's share — 75% to the firm, 25% to the NWAM advisor servicing the book — is governed by a separate agreement with that advisor and is not modeled here.
+      <strong>Structure:</strong> Over the <strong>6-year payout</strong>, revenue splits <strong>50 / 25 / 25</strong> (retiring advisor / NWAM advisor servicing the book / firm). The advisor's <strong>50%</strong> is the purchase price. From <strong>Year 7 on</strong> the advisor is fully paid out and NWAM keeps <strong>100%</strong>, split <strong>75%</strong> firm / <strong>25%</strong> servicing advisor.
     </div>
 
     <!-- INPUTS -->
@@ -819,13 +819,18 @@ tr:hover td{background:var(--bg);}
         <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="staged_rev" value="500,000" oninput="fmtInput(this,'staged')"/></div>
         <div class="scn-hint">Gross annual revenue of the book</div>
       </div>
+      <div class="scn-field">
+        <label>Dept Expenses / Salaries</label>
+        <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="staged_exp" value="95,000" oninput="fmtInput(this,'staged')"/></div>
+        <div class="scn-hint">Annual · e.g. associate $80K + dept head $15K</div>
+      </div>
       <button class="analyze-btn" onclick="renderScenario('staged')">Analyze</button>
     </div>
 
     <!-- NUMBERS BREAKDOWN -->
     <div class="model-panel" style="margin-bottom:1.25rem;">
       <div class="panel-title">Numbers breakdown</div>
-      <p class="panel-intro">Per-year revenue split between the retiring advisor and NWAM, with NWAM's cumulative take. The advisor's 50% (years 1–6) is the purchase price — there is no separate up-front payment.</p>
+      <p class="panel-intro">Per-year figures for each phase and the 10-year cumulative. Dept expenses / salaries are a firm cost, deducted from the firm's share to give firm net.</p>
       <div class="table-wrap"><table id="staged_breakdown"></table></div>
     </div>
 
@@ -837,9 +842,9 @@ tr:hover td{background:var(--bg);}
       <div class="dv" id="staged_yield">—</div>
     </div>
 
-    <div style="display:flex;align-items:flex-start;gap:10px;background:var(--blue-xlight);border:1px solid var(--border);border-radius:6px;padding:0.85rem 1rem;">
-      <span style="font-size:15px;line-height:1;margin-top:1px;flex-shrink:0;">📝</span>
-      <div style="font-size:13px;color:var(--ink);line-height:1.6;"><strong>Note:</strong> this tab shows what NWAM receives from the buyout (50% during the payout, 100% after). How NWAM's share is split internally — 75% firm / 25% the servicing NWAM advisor — is covered in the separate agreement with that advisor, so firm-level net is not computed here.</div>
+    <div style="display:flex;align-items:flex-start;gap:10px;background:var(--amber-light);border:1px solid rgba(245,158,11,0.35);border-radius:6px;padding:0.75rem 1rem;">
+      <span style="font-size:15px;line-height:1;margin-top:1px;flex-shrink:0;">⚠️</span>
+      <div style="font-size:13px;color:var(--ink);line-height:1.6;"><strong>Note:</strong> the advisor's 50% (years 1–6) is the purchase price — there is no separate up-front payment. The internal 75% firm / 25% servicing-advisor split of NWAM's share is governed by the separate agreement with the NWAM advisor.</div>
     </div>
 
   </div>
@@ -1641,49 +1646,63 @@ function renderScenario(key) {
   const numVal = id => parseFloat((document.getElementById(id).value || '').replace(/[^0-9.]/g, '')) || 0;
   const aum = numVal(key + '_aum');
   const rev = numVal(key + '_rev');
+  const exp = numVal(key + '_exp');
 
-  document.getElementById(key + '_yield').textContent = aum > 0 ? (rev / aum * 100).toFixed(2) + '%' : '—';
+  // Derived yield
+  const yieldEl = document.getElementById(key + '_yield');
+  yieldEl.textContent = aum > 0 ? (rev / aum * 100).toFixed(2) + '%' : '—';
 
+
+  // Per-year rows, cumulative firm net, and the break-even year
+  const rows = [];
+  let cum = 0, breakevenYear = 0;
+  let tAdvisor = 0, tDept = 0, tFirm = 0, tExp = 0;
+  for (let y = 1; y <= SCN_YEARS; y++) {
+    const [sa, sd, sf] = scnSplits(y);
+    const advisor = rev * sa, dept = rev * sd, firmGross = rev * sf;
+    const firmNet = firmGross - exp;
+    cum += firmNet;
+    if (breakevenYear === 0 && cum >= 0) breakevenYear = y;
+    rows.push({ y, advisor, dept, firmGross, exp, firmNet, cum });
+    tAdvisor += advisor; tDept += dept; tFirm += firmGross; tExp += exp;
+  }
+  const firmNetTot = tFirm - tExp;
+
+  // Summary cards
+  document.getElementById(key + '_cards').innerHTML =
+    scnCard('Original Advisor', tAdvisor, 'Yrs 1–6 at 50% · then bought out') +
+    scnCard('NWAM Advisors (Dept)', tDept, 'Flat 25% across all ' + SCN_YEARS + ' yrs') +
+    scnCard('Firm net · ' + SCN_YEARS + ' yrs', firmNetTot, breakevenYear ? ('Cumulative break-even in Year ' + breakevenYear) : ('No break-even by Year ' + SCN_YEARS));
+
+  // Compact currency for the dense year-by-year table
   const fmtC = n => {
     const a = Math.abs(n), sg = n < 0 ? '-' : '';
     if (a >= 999500) return sg + '$' + (a / 1000000).toFixed(2) + 'M';
     if (a >= 1000) return sg + '$' + Math.round(a / 1000) + 'K';
     return sg + '$' + Math.round(a);
   };
-  const money = v => '<td style="white-space:nowrap;color:var(--ink);">' + fmtC(v) + '</td>';
-  const nwamCell = v => '<td style="font-weight:600;white-space:nowrap;color:var(--green);">' + fmtC(v) + '</td>';
-  const card = (title, val, sub) =>
-    '<div style="background:var(--white);border:1px solid var(--border-soft);border-top:3px solid var(--blue);border-radius:6px;padding:1.25rem;">' +
-    '<div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:6px;">' + title + '</div>' +
-    '<div style="font-family:\'DM Serif Display\',serif;font-size:26px;color:var(--blue);line-height:1;margin-bottom:4px;">' + fmt(val) + '</div>' +
-    '<div style="font-size:12px;color:var(--ink-soft);">' + sub + '</div></div>';
+  // Cell helpers
+  const money = (v, neg) => {
+    const showNeg = neg && Math.abs(v) > 0.5;
+    const col = showNeg ? 'var(--red)' : (v < 0 ? 'var(--red)' : 'var(--ink)');
+    return '<td style="color:' + col + ';white-space:nowrap;">' + (showNeg ? '−' : '') + fmtC(Math.abs(v)) + '</td>';
+  };
+  const netCell = v => '<td style="font-weight:600;white-space:nowrap;color:' + (v >= 0 ? 'var(--green)' : 'var(--red)') + ';">' + fmtC(v) + '</td>';
 
-  // Per-year rows: 50% seller / 50% NWAM through the payout, then 100% NWAM
-  const rows = [];
-  let cum = 0, tSeller = 0, tNwam = 0;
-  for (let y = 1; y <= SCN_YEARS; y++) {
-    const inPayout = y <= SCN_SPLIT_YEAR;
-    const seller = inPayout ? rev * 0.5 : 0;
-    const nwam = inPayout ? rev * 0.5 : rev;
-    cum += nwam;
-    rows.push({ y, seller, nwam, cum });
-    tSeller += seller; tNwam += nwam;
-  }
-
-  document.getElementById(key + '_cards').innerHTML =
-    card('Purchase price (to seller)', tSeller, '50% of revenue × ' + SCN_SPLIT_YEAR + ' yrs · ≈ ' + (SCN_SPLIT_YEAR * 50) + '% of annual') +
-    card('To NWAM · yrs 1–' + SCN_SPLIT_YEAR, rev * 0.5, 'per yr · the other half of revenue') +
-    card('To NWAM · ' + SCN_YEARS + ' yrs', tNwam, '50% yrs 1–' + SCN_SPLIT_YEAR + ' → 100% after · ' + SCN_YEARS + '-yr total');
-
+  // Per-year table body
   let body = '';
   rows.forEach(r => {
-    body += '<tr>' +
-      '<td style="font-weight:600;color:var(--ink);white-space:nowrap;">Year ' + r.y + '</td>' +
-      money(rev) + money(r.seller) + nwamCell(r.nwam) + nwamCell(r.cum) + '</tr>';
+    const be = r.y === breakevenYear;
+    const rowStyle = be ? ' style="background:var(--green-light);"' : '';
+    const yearCell = '<td style="font-weight:600;color:var(--ink);white-space:nowrap;">Year ' + r.y +
+      (be ? ' <span class="badge badge-g">Break-even</span>' : '') + '</td>';
+    body += '<tr' + rowStyle + '>' + yearCell + money(rev) + money(r.advisor) + money(r.firmGross) + money(r.dept) +
+      money(r.exp, true) + netCell(r.firmNet) + netCell(r.cum) + '</tr>';
   });
   body += '<tr style="font-weight:700;background:var(--blue-xlight);">' +
     '<td style="color:var(--blue);white-space:nowrap;">' + SCN_YEARS + '-yr total</td>' +
-    money(rev * SCN_YEARS) + money(tSeller) + nwamCell(tNwam) + '<td></td>' +
+    money(rev * SCN_YEARS) + money(tAdvisor) + money(tFirm) + money(tDept) +
+    money(tExp, true) + netCell(firmNetTot) + '<td></td>' +
   '</tr>';
 
   document.getElementById(key + '_breakdown').innerHTML =
@@ -1691,8 +1710,11 @@ function renderScenario(key) {
       '<th style="color:#fff;border-bottom:none;">Year</th>' +
       '<th style="color:#fff;border-bottom:none;">Gross</th>' +
       '<th style="color:#fff;border-bottom:none;">To Seller</th>' +
-      '<th style="color:#fff;border-bottom:none;">To NWAM</th>' +
-      '<th style="color:#fff;border-bottom:none;">Cum. to NWAM</th>' +
+      '<th style="color:#fff;border-bottom:none;">NWAM gross</th>' +
+      '<th style="color:#fff;border-bottom:none;">NWAM dept exp</th>' +
+      '<th style="color:#fff;border-bottom:none;">Dept exp</th>' +
+      '<th style="color:#fff;border-bottom:none;">NWAM net</th>' +
+      '<th style="color:#fff;border-bottom:none;">Cum. net</th>' +
     '</tr></thead><tbody>' + body + '</tbody>';
 }
 function scnCard(title, total, sub) {
