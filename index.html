@@ -1529,9 +1529,6 @@ function renderFA2() {
   const grossP = rev * 0.5 * 5 + rev * 1.0 * 5;
   const netP = grossP - expTot;
 
-  const beYear = (perYear) => { let c = 0; for (let y = 1; y <= YEARS; y++) { c += perYear(y); if (c >= 0) return y; } return 0; };
-  const beB = beYear(y => (y <= 6 ? rev * 0.25 - exp - price / 6 : rev * 0.75 - exp));
-  const beP = beYear(y => (y <= 5 ? rev * 0.5 - exp : rev * 1.0 - exp));
 
   const fmtC = n => {
     const a = Math.abs(n), sg = n < 0 ? '-' : '';
@@ -1553,7 +1550,6 @@ function renderFA2() {
       '<tr>' + plain('Dept expenses / salaries') + cell(expTot, {neg:true}) + cell(expTot, {neg:true}) + '</tr>' +
       '<tr>' + plain('Separate purchase price') + cell(price, {neg:true}) + plain('—') + '</tr>' +
       '<tr style="font-weight:600;background:var(--blue-xlight);"><td style="color:var(--blue);">Firm net</td>' + cell(netB, {net:true}) + cell(netP, {net:true}) + '</tr>' +
-      '<tr>' + plain('Cumulative break-even') + plain(beB ? ('Year ' + beB) : 'never') + plain(beP ? ('Year ' + beP) : 'never') + '</tr>' +
     '</tbody>';
 
   // Bridge: buyout net -> poloko net
@@ -1597,7 +1593,7 @@ function renderPoloko() {
   const netCell = v => '<td style="font-weight:600;white-space:nowrap;color:' + (v >= 0 ? 'var(--green)' : 'var(--red)') + ';">' + fmtC(v) + '</td>';
 
   const rows = [];
-  let cum = 0, breakevenYear = 0;
+  let cum = 0;
   let tSeller = 0, tNwam = 0, tExp = 0;
   for (let y = 1; y <= POLOKO_HORIZON; y++) {
     const inPayout = y <= POLOKO_PAYOUT_YEARS;
@@ -1605,7 +1601,6 @@ function renderPoloko() {
     const nwamGross = inPayout ? rev * 0.5 : rev;
     const firmNet = nwamGross - exp;
     cum += firmNet;
-    if (breakevenYear === 0 && cum >= 0) breakevenYear = y;
     rows.push({ y, seller, nwamGross, exp, firmNet, cum });
     tSeller += seller; tNwam += nwamGross; tExp += exp;
   }
@@ -1615,15 +1610,12 @@ function renderPoloko() {
   document.getElementById('poloko_cards').innerHTML =
     scnCard('Purchase price (to seller)', tSeller, '50% of AGR × 5 yrs · ≈ 250% of annual') +
     scnCard('Firm net · yrs 1–5', rev * 0.5 - exp, 'per yr · 50% AGR − dept expenses') +
-    scnCard('Firm net · 10 yrs', firmNetTot, breakevenYear ? ('Cumulative break-even in Year ' + breakevenYear + ' · 10-yr total') : ('No break-even by Year ' + POLOKO_HORIZON));
+    scnCard('Firm net · 10 yrs', firmNetTot, '50% AGR yrs 1–5 → 100% after · 10-yr total');
 
   let body = '';
   rows.forEach(r => {
-    const be = r.y === breakevenYear;
-    const rowStyle = be ? ' style="background:var(--green-light);"' : '';
-    const yearCell = '<td style="font-weight:600;color:var(--ink);white-space:nowrap;">Year ' + r.y +
-      (be ? ' <span class="badge badge-g">Break-even</span>' : '') + '</td>';
-    body += '<tr' + rowStyle + '>' + yearCell + money(rev) + money(r.seller) + money(r.nwamGross) +
+    const yearCell = '<td style="font-weight:600;color:var(--ink);white-space:nowrap;">Year ' + r.y + '</td>';
+    body += '<tr>' + yearCell + money(rev) + money(r.seller) + money(r.nwamGross) +
       money(r.exp, true) + netCell(r.firmNet) + netCell(r.cum) + '</tr>';
   });
   body += '<tr style="font-weight:700;background:var(--blue-xlight);">' +
@@ -1655,24 +1647,23 @@ function renderScenario(key) {
 
   // Per-year rows, cumulative firm net, and the break-even year
   const rows = [];
-  let cum = 0, breakevenYear = 0;
+  let cum = 0;
   let tAdvisor = 0, tDept = 0, tFirm = 0, tExp = 0;
   for (let y = 1; y <= SCN_YEARS; y++) {
     const [sa, sd, sf] = scnSplits(y);
-    const advisor = rev * sa, dept = rev * sd, firmGross = rev * sf;
-    const firmNet = firmGross - exp;
+    const advisor = rev * sa, dept = rev * sd, firmGross = rev - advisor;
+    const firmNet = firmGross - dept - exp;
     cum += firmNet;
-    if (breakevenYear === 0 && cum >= 0) breakevenYear = y;
     rows.push({ y, advisor, dept, firmGross, exp, firmNet, cum });
     tAdvisor += advisor; tDept += dept; tFirm += firmGross; tExp += exp;
   }
-  const firmNetTot = tFirm - tExp;
+  const firmNetTot = tFirm - tDept - tExp;
 
   // Summary cards
   document.getElementById(key + '_cards').innerHTML =
     scnCard('Original Advisor', tAdvisor, 'Yrs 1–6 at 50% · then bought out') +
     scnCard('NWAM Advisors (Dept)', tDept, 'Flat 25% across all ' + SCN_YEARS + ' yrs') +
-    scnCard('Firm net · ' + SCN_YEARS + ' yrs', firmNetTot, breakevenYear ? ('Cumulative break-even in Year ' + breakevenYear) : ('No break-even by Year ' + SCN_YEARS));
+    scnCard('Firm net · ' + SCN_YEARS + ' yrs', firmNetTot, 'after dept share & salaries');
 
   // Compact currency for the dense year-by-year table
   const fmtC = n => {
@@ -1692,11 +1683,8 @@ function renderScenario(key) {
   // Per-year table body
   let body = '';
   rows.forEach(r => {
-    const be = r.y === breakevenYear;
-    const rowStyle = be ? ' style="background:var(--green-light);"' : '';
-    const yearCell = '<td style="font-weight:600;color:var(--ink);white-space:nowrap;">Year ' + r.y +
-      (be ? ' <span class="badge badge-g">Break-even</span>' : '') + '</td>';
-    body += '<tr' + rowStyle + '>' + yearCell + money(rev) + money(r.advisor) + money(r.firmGross) + money(r.dept) +
+    const yearCell = '<td style="font-weight:600;color:var(--ink);white-space:nowrap;">Year ' + r.y + '</td>';
+    body += '<tr>' + yearCell + money(rev) + money(r.advisor) + money(r.firmGross) + money(r.dept) +
       money(r.exp, true) + netCell(r.firmNet) + netCell(r.cum) + '</tr>';
   });
   body += '<tr style="font-weight:700;background:var(--blue-xlight);">' +
