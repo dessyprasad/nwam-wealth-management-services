@@ -1578,6 +1578,8 @@ function renderPoloko() {
     tSeller += seller; tNwam += nwamGross; tExp += exp;
   }
   const firmNetTot = tNwam - tExp;
+  let breakevenYear = 0;
+  for (const r of rows) { if (r.cum >= tSeller) { breakevenYear = r.y; break; } }
 
   // Summary cards
   document.getElementById('poloko_cards').innerHTML =
@@ -1587,8 +1589,9 @@ function renderPoloko() {
 
   let body = '';
   rows.forEach(r => {
-    const yearCell = '<td style="font-weight:600;color:var(--ink);white-space:nowrap;">Year ' + r.y + '</td>';
-    body += '<tr>' + yearCell + money(rev) + money(r.seller) + money(r.nwamGross) +
+    const be = r.y === breakevenYear;
+    const yearCell = '<td style="font-weight:600;color:var(--ink);white-space:nowrap;">Year ' + r.y + (be ? ' <span class="badge badge-g">Break-even</span>' : '') + '</td>';
+    body += '<tr' + (be ? ' style="background:var(--green-light);"' : '') + '>' + yearCell + money(rev) + money(r.seller) + money(r.nwamGross) +
       money(r.exp, true) + netCell(r.firmNet) + netCell(r.cum) + '</tr>';
   });
   body += '<tr style="font-weight:700;background:var(--blue-xlight);">' +
@@ -1631,6 +1634,8 @@ function renderScenario(key) {
     tAdvisor += advisor; tDept += dept; tFirm += firmGross; tExp += exp;
   }
   const firmNetTot = tFirm - tDept - tExp;
+  let breakevenYear = 0;
+  for (const r of rows) { if (r.cum >= tAdvisor) { breakevenYear = r.y; break; } }
 
   // Summary cards
   document.getElementById(key + '_cards').innerHTML =
@@ -1656,8 +1661,9 @@ function renderScenario(key) {
   // Per-year table body
   let body = '';
   rows.forEach(r => {
-    const yearCell = '<td style="font-weight:600;color:var(--ink);white-space:nowrap;">Year ' + r.y + '</td>';
-    body += '<tr>' + yearCell + money(rev) + money(r.advisor) + money(r.firmGross) + money(r.dept) +
+    const be = r.y === breakevenYear;
+    const yearCell = '<td style="font-weight:600;color:var(--ink);white-space:nowrap;">Year ' + r.y + (be ? ' <span class="badge badge-g">Break-even</span>' : '') + '</td>';
+    body += '<tr' + (be ? ' style="background:var(--green-light);"' : '') + '>' + yearCell + money(rev) + money(r.advisor) + money(r.firmGross) + money(r.dept) +
       money(r.exp, true) + netCell(r.firmNet) + netCell(r.cum) + '</tr>';
   });
   body += '<tr style="font-weight:700;background:var(--blue-xlight);">' +
