@@ -819,11 +819,10 @@ tr:hover td{background:var(--bg);}
         <div class="scn-hint">Gross annual revenue of the book</div>
       </div>
       <div class="scn-field">
-        <label>Dept Expenses / Salaries</label>
+        <label>Dept Expenses + AA Salary</label>
         <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="staged_exp" value="95,000" oninput="fmtInput(this,'staged')"/></div>
         <div class="scn-hint">Annual · e.g. associate $80K + dept head $15K</div>
       </div>
-      <button class="analyze-btn" onclick="renderScenario('staged')">Analyze</button>
     </div>
 
     <!-- NUMBERS BREAKDOWN -->
@@ -900,11 +899,10 @@ tr:hover td{background:var(--bg);}
         <div class="scn-hint">Net of custodian wrap &amp; transaction fees</div>
       </div>
       <div class="scn-field">
-        <label>Dept Expenses / Salaries</label>
+        <label>Dept Expenses + AA Salary</label>
         <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="poloko_exp" value="95,000" oninput="fmtInput(this,'poloko')"/></div>
         <div class="scn-hint">Annual cost to service the acquired book</div>
       </div>
-      <button class="analyze-btn" onclick="renderPoloko()">Analyze</button>
     </div>
 
     <!-- NUMBERS BREAKDOWN -->
@@ -948,11 +946,10 @@ tr:hover td{background:var(--bg);}
         <div class="scn-hint">Same book revenue for both models</div>
       </div>
       <div class="scn-field">
-        <label>Dept Expenses / Salaries</label>
+        <label>Dept Expenses + AA Salary</label>
         <div class="scn-input-wrap"><span class="prefix">$</span><input type="text" inputmode="numeric" id="fa2_exp" value="95,000" oninput="fmtInput(this,'fa2')"/></div>
         <div class="scn-hint">Annual servicing cost · both models</div>
       </div>
-      <button class="fa2-analyze" onclick="renderFA2()">Analyze</button>
     </div>
 
     <div class="model-panel" style="margin-bottom:1.25rem;">
